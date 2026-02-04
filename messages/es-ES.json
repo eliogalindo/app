@@ -1,0 +1,334 @@
+{
+  "Common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "canceling": "Cancelando...",
+    "createdAt": "Creado el",
+    "actions": "Acciones",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "delete": "Eliminar",
+    "deleting": "Eliminando...",
+    "edit": "Editar",
+    "editing": "Editando...",
+    "view": "Ver",
+    "add": "Agregar",
+    "adding": "Agregando...",
+    "addNew": "Agregar nuevo",
+    "update": "Actualizar",
+    "updating": "Actualizando...",
+    "yes": "Sí",
+    "no": "No",
+    "accept": "Aceptar",
+    "of": "de",
+    "selected": "seleccionados",
+    "rowsPerPage": "Filas por página",
+    "allItemsSelected": "Todos los elementos seleccionados",
+    "columns": "Columnas",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "deleteConfirmationTitle": "Confirmación de eliminación",
+    "deleteConfirmationMessage": "¿Estás seguro de que deseas eliminar los elementos seleccionados? Esta acción no se puede deshacer.",
+    "details": "Detalles",
+    "connected": "Conectado al servidor",
+    "reconnecting": "La conexión con el servidor se ha perdido. Reconectando...",
+    "disconnected": "La conexión con el servidor se ha perdido"
+  },
+  "SignIn": {
+    "title": "Iniciar sesión",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "Introduce tu correo electrónico",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Introduce tu contraseña",
+    "rememberMe": "Recuérdame",
+    "submit": "Iniciar sesión",
+    "submitting": "Iniciando sesión...",
+    "forgotPassword": "¿Olvidaste tu contraseña? Restablécela",
+    "signUp": "¿No tienes una cuenta? Regístrate",
+    "messages": {
+      "fieldRequired": "Este campo es requerido",
+      "validEmailRequired": "Introduce un correo electrónico válido",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+      "invalidCredentials": "Usuario o contraseña inválidos",
+      "userNotFound": "Usuario no encontrado",
+      "userDisabled": "Usuario deshabilitado",
+      "tooManyRequests": "Demasiadas solicitudes, por favor intenta de nuevo más tarde",
+      "signInSuccess": "Sesión iniciada con éxito",
+      "signInError": "Ocurrió un error al iniciar sesión"
+    }
+  },
+  "SignUp": {
+    "title": "Regístrarse",
+    "submit": "Regístrarse",
+    "submitting": "Registrando...",
+    "signIn": "¿Ya tienes una cuenta? Inicia sesión",
+    "messages": {
+      "fieldRequired": "Este campo es requerido",
+      "rolesRequired": "Se requiere al menos un rol",
+      "phoneNumberMinLength": "El número de teléfono debe tener al menos 8 dígitos, incluido el código de país, p. ej.: +53",
+      "validEmailRequired": "Introduce un correo electrónico válido",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+      "passwordMatch": "Las contraseñas deben coincidir",
+      "passwordRegex": "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial",
+      "signUpSuccess": "Usuario creado con éxito. Un código de verificación ha sido enviado a tu correo electrónico",
+      "signUpError": "Ocurrió un error al crear el usuario"
+    },
+    "fullName": "Nombre completo",
+    "username": "Nombre de usuario",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "password": "Contraseña",
+    "passwordConfirmation": "Confirmar contraseña",
+    "fullNamePlaceholder": "Introduce el nombre completo",
+    "usernamePlaceholder": "Introduce el nombre de usuario",
+    "phonePlaceholder": "Introduce el número de teléfono",
+    "emailPlaceholder": "Introduce el correo electrónico",
+    "passwordPlaceholder": "Introduce la contraseña",
+    "passConfirmPlaceholder": "Confirma la contraseña"
+  },
+  "VerifyCode": {
+    "title": "Verificar código",
+    "submit": "Verificar",
+    "submitting": "Verificando...",
+    "messages": {
+      "fieldRequired": "Este campo es requerido",
+      "invalidCode": "Código de verificación no válido",
+      "verificationSuccess": "Cuenta verificada con éxito",
+      "verificationError": "Ocurrió un error al verificar la cuenta",
+      "codeResent": "Código de verificación reenviado con éxito"
+    },
+    "code": "Código de verificación",
+    "codePlaceholder": "Introduce el código de verificación",
+    "resendCode": "¿No recibiste el código? Reenviar",
+    "resending": "Reenviando código de verificación...",
+    "wait": "Espera",
+    "secondsToResendCode": "segundos para reenviar el código",
+    "signIn": "¿Ya tienes una cuenta? Inicia sesión"
+  },
+  "VerifyAccount": {
+    "title": "Verificar cuenta",
+    "submit": "Verificar",
+    "submitting": "Verificando...",
+    "messages": {
+      "fieldRequired": "Este campo es requerido",
+      "validEmailRequired": "Introduce un correo electrónico válido",
+      "verificationSuccess": "Cuenta verificada con éxito. Un código de verificación ha sido enviado a tu correo electrónico",
+      "verificationError": "Ocurrió un error al verificar la cuenta"
+    },
+    "email": "Correo electrónico",
+    "emailPlaceholder": "Introduce el correo electrónico",
+    "signIn": "¿Ya restableciste la contraseña? Inicia sesión"
+  },
+  "ResetPassword": {
+    "title": "Restablecer contraseña",
+    "submit": "Restablecer",
+    "submitting": "Restableciendo...",
+    "password": "Contraseña",
+    "passwordConfirmation": "Confirmar contraseña",
+    "passwordPlaceholder": "Introduce la nueva contraseña",
+    "passConfirmPlaceholder": "Confirma la nueva contraseña",
+    "messages": {
+      "fieldRequired": "Este campo es requerido",
+      "resetSuccess": "Contraseña restablecida con éxito. Ahora puedes iniciar sesión",
+      "resetError": "Ocurrió un error al restablecer la contraseña",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+      "passwordMatch": "Las contraseñas deben coincidir",
+      "passwordRegex": "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial",
+      "passwordResetSuccess": "Contraseña restablecida con éxito",
+      "passwordResetError": "Ocurrió un error al restablecer la contraseña"
+    },
+    "signIn": "¿Ya restableciste la contraseña? Inicia sesión"
+  },
+  "Navbar": {
+    "brand": "ACME Corp",
+    "links": {
+      "dashboard": "CMI",
+      "roles": "Roles",
+      "users": "Usuarios",
+      "traces": "Trazas"
+    },
+    "menu": {
+      "profile": "Mi perfil",
+      "signedInAs": "Sesión iniciada como:",
+      "notifications": "Notificaciones",
+      "signOut": "Cerrar sesión"
+    },
+    "messages": {
+      "signOutSuccess": "Sesión cerrada con éxito",
+      "signOutError": "Ocurrió un error al cerrar sesión"
+    }
+  },
+  "Dashboard": {
+    "title": "CMI"
+  },
+  "Products": {
+    "title": "Productos"
+  },
+  "Users": {
+    "user": "usuario",
+    "users": "usuarios",
+    "title": "Usuarios",
+    "messages": {
+      "fieldRequired": "Este campo es requerido",
+      "fullNameMaxLength": "El nombre completo debe tener máximo 50 caracteres",
+      "usernameMaxLength": "El nombre de usuario debe tener máximo 50 caracteres",
+      "emailMaxLength": "El correo electrónico debe tener máximo 50 caracteres",
+      "rolesRequired": "Se requiere al menos un rol",
+      "phoneNumberMinLength": "El número de teléfono debe tener al menos 8 dígitos, incluido el código de país, p. ej.: +1",
+      "phoneNumberMaxLength": "El número de teléfono debe tener máximo 14 dígitos, incluido el código de país, p. ej.: +1",
+      "validEmailRequired": "Introduce un correo electrónico válido",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
+      "passwordMaxLength": "La contraseña debe tener máximo 50 caracteres",
+      "passwordMatch": "Las contraseñas deben coincidir",
+      "passwordRegex": "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial",
+      "fetchError": "Ocurrió un error al obtener los usuarios",
+      "createSuccess": "Usuario creado con éxito",
+      "createError": "Ocurrió un error al crear el usuario",
+      "updateSuccess": "Usuario actualizado con éxito",
+      "updateError": "Ocurrió un error al actualizar el usuario",
+      "deleteSuccess": "Usuario eliminado con éxito",
+      "deleteError": "Ocurrió un error al eliminar el usuario",
+      "deleteManySuccess": "Usuarios eliminados con éxito",
+      "deleteManyError": "Ocurrió un error al eliminar los usuarios"
+    },
+    "fullName": "Nombre completo",
+    "username": "Nombre de usuario",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "status": "Estado",
+    "password": "Contraseña",
+    "passwordConfirmation": "Confirmar contraseña",
+    "createdAt": "Creado el",
+    "fullNamePlaceholder": "Introduce el nombre completo",
+    "usernamePlaceholder": "Introduce el nombre de usuario",
+    "phonePlaceholder": "Introduce el número de teléfono",
+    "emailPlaceholder": "Introduce el correo electrónico",
+    "passwordPlaceholder": "Introduce la contraseña",
+    "passConfirmPlaceholder": "Confirma la contraseña",
+    "statusPlaceholder": "Selecciona el estado",
+    "actions": "Acciones",
+    "statusValues": {
+      "enabled": "Habilitado",
+      "disabled": "Deshabilitado",
+      "pending": "Pendiente"
+    },
+    "roles": "Roles",
+    "actionDescriptions": {
+      "viewDescription": "Ver los detalles del usuario",
+      "editDescription": "Editar el usuario",
+      "deleteDescription": "Eliminar permanentemente al usuario"
+    },
+    "searchPlaceholder": "Buscar usuarios por nombre, nombre de usuario o correo electrónico",
+    "noUsersFound": "No se encontraron usuarios"
+  },
+  "Roles": {
+    "role": "rol",
+    "roles": "roles",
+    "title": "Roles",
+    "messages": {
+      "fieldRequired": "Este campo es requerido",
+      "denominationMaxLength": "La denominación debe tener máximo 100 caracteres",
+      "descriptionMaxLength": "La descripción debe tener máximo 150 caracteres",
+      "permissionsRequired": "Se requiere al menos un permiso",
+      "fetchError": "Ocurrió un error al obtener los roles",
+      "createSuccess": "Rol creado con éxito",
+      "createError": "Ocurrió un error al crear el rol",
+      "updateSuccess": "Rol actualizado con éxito",
+      "updateError": "Ocurrió un error al actualizar el rol",
+      "deleteSuccess": "Rol eliminado con éxito",
+      "deleteError": "Ocurrió un error al eliminar el rol",
+      "deleteManySuccess": "Roles eliminados con éxito",
+      "deleteManyError": "Ocurrió un error al eliminar los roles"
+    },
+    "denomination": "Denominación",
+    "denominationPlaceholder": "Escribe la denominación del rol",
+    "description": "Descripción",
+    "descriptionPlaceholder": "Escribe la descripción del rol",
+    "permissions": "Permisos",
+    "permissionsPlaceholder": "Selecciona los permisos del rol",
+    "enabled": "Habilitado",
+    "createdAt": "Creado el",
+    "actions": "Acciones",
+    "actionDescriptions": {
+      "viewDescription": "Ver los detalles del rol",
+      "editDescription": "Editar el rol",
+      "deleteDescription": "Eliminar permanentemente el rol"
+    },
+    "searchPlaceholder": "Buscar roles por denominación o descripción",
+    "noRolesFound": "No se encontraron roles"
+  },
+  "Permissions": {
+    "permission": "permiso",
+    "permissions": "permisos",
+    "messages": {
+      "fetchError": "Ocurrió un error al obtener los permisos"
+    },
+    "groupValues": {
+      "administrative": "Administrativo",
+      "standard": "Estándar"
+    },
+    "actionValues": {
+      "read": "Leer",
+      "write": "Escribir",
+      "delete": "Eliminar"
+    },
+    "denomination": "Denominación",
+    "description": "Descripción",
+    "group": "Grupo",
+    "action": "Acción",
+    "createdAt": "Creado el",
+    "searchPlaceholder": "Buscar permisos por denominación o descripción",
+    "noPermissionsFound": "No se encontraron permisos"
+  },
+  "Notifications": {
+    "title": "Notificaciones",
+    "notifications": "notificaciones",
+    "toastTitle": "Nueva notificación",
+    "message": "Mensaje",
+    "type": "Tipo",
+    "markAsRead":"Marcar como leída",
+    "markAllAsRead":"Marcar todas como leídas",
+    "includeRead": "Incluir leídas",
+    "typeValues": {
+      "default": "Estándar",
+      "info": "Información",
+      "system": "Sistema"
+    },
+    "messages": {
+      "fetchError": "Ocurrió un error al obtener las notificaciones",
+      "markAsReadSuccess": "Notificación marcada como leída con éxito",
+      "markAsReadError": "Ocurrió un error marcar la notificación como leída",
+      "markAllAsReadSuccess": "Notificaciones marcadas como leídas con éxito",
+      "markAllAsReadError": "Ocurrió un error marcar la notificaciones como leídas",
+      "deleteSuccess": "Notificación eliminada con éxito",
+      "deleteError": "Ocurrió un error al eliminar la notificación",
+      "deleteManySuccess": "Notificaciones eliminadas con éxito",
+      "deleteManyError": "Ocurrió un error al eliminar las notificaciones"
+    },
+    "actionDescriptions": {
+      "viewDescription": "Ver los detalles de la notificación",
+      "markAsRead": "Marcar la notificación como leída",
+      "deleteDescription": "Eliminar permanentemente la notificación"
+    },
+    "searchPlaceholder": "Buscar notificaciones por mensaje",
+    "noNotificationsFound": "No se encontraron notificaciones"
+  },
+  "Traces": {
+    "title": "Trazas",
+    "traces": "trazas",
+    "description": "Descripción",
+    "action": "Acción",
+    "ip": "Dirección IP",
+    "actionValues": {
+      "create": "Crear",
+      "update": "Actualizar",
+      "delete": "Eliminar"
+    },
+    "actionDescriptions": {
+      "viewDescription": "Ver los detalles de la traza"
+    },
+    "noTracesFound": "No se encontraron trazas del sistema"
+  }
+}

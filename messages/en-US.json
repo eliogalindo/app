@@ -1,0 +1,341 @@
+{
+  "Common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "canceling": "Canceling...",
+    "createdAt": "Created at",
+    "actions": "Actions",
+    "save": "Save",
+    "saving": "Saving...",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "edit": "Edit",
+    "editing": "Editing...",
+    "view": "View",
+    "add": "Add",
+    "adding": "Adding...",
+    "addNew": "Add New",
+    "update": "Update",
+    "updating": "Updating...",
+    "yes": "Yes",
+    "no": "No",
+    "accept": "Accept",
+    "of": "of",
+    "selected": "selected",
+    "rowsPerPage": "Rows per page",
+    "allItemsSelected": "All items selected",
+    "columns": "Columns",
+    "previous": "Previous",
+    "next": "Next",
+    "deleteConfirmationTitle": "Delete Confirmation",
+    "deleteConfirmationMessage": "Are you sure you want to delete the selected items? This action cannot be undone",
+    "details": "Details",
+    "connected": "Connected to the server",
+    "reconnecting": "The connection with the server is lost. Reconnecting...",
+    "disconnected": "The connection with the server is lost"
+  },
+  "SignIn": {
+    "title": "Sign in",
+    "email": "Email",
+    "emailPlaceholder": "Type your email",
+    "password": "Password",
+    "passwordPlaceholder": "Type your password",
+    "rememberMe": "Remember me",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "forgotPassword": "Forgot password? Reset it",
+    "signUp": "Don't have an account? Sign up",
+    "messages": {
+      "fieldRequired": "This field is required",
+      "validEmailRequired": "Type a valid email",
+      "passwordMinLength": "Password must be at least 8 characters long",
+      "invalidCredentials": "Invalid username or password",
+      "userNotFound": "User not found",
+      "userDisabled": "User disabled",
+      "tooManyRequests": "Too many requests, please try again later",
+      "unknownError": "An unknown error occurred",
+      "signInSuccess": "Successfully signed in",
+      "signInError": "An error occurred while signing in"
+    }
+  },
+  "SignUp": {
+    "title": "Sign up",
+    "submit": "Sign up",
+    "submitting": "Signing up...",
+    "signIn": "Already have an account? Sign in",
+    "messages": {
+      "fieldRequired": "This field is required",
+      "rolesRequired": "At least one role is required",
+      "phoneNumberMinLength": "The phone number must have at least 8 digits including the country code, eg: +1",
+      "validEmailRequired": "Type a valid email",
+      "passwordMinLength": "The password must have at least 8 characters",
+      "passwordMatch": "Passwords must match",
+      "passwordRegex": "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
+      "signUpSuccess": "Signed up successfully. A verification code has been sent to your email",
+      "signUpError": "An error occurred while signing up"
+    },
+    "fullName": "Full Name",
+    "username": "Username",
+    "email": "Email",
+    "phone": "Phone",
+    "status": "Status",
+    "password": "Password",
+    "passwordConfirmation": "Confirm password",
+    "fullNamePlaceholder": "Type the name",
+    "usernamePlaceholder": "Type the username",
+    "phonePlaceholder": "Type the phone number",
+    "emailPlaceholder": "Type the email",
+    "passwordPlaceholder": "Type the password",
+    "passConfirmPlaceholder": "Confirm the password",
+    "validPhoneRequired": "Type a valid phone number"
+  },
+  "VerifyCode": {
+    "title": "Verify code",
+    "submit": "Verify",
+    "submitting": "Verifying...",
+    "messages": {
+      "fieldRequired": "This field is required",
+      "codeMinLength": "The verification code must be at least 6 characters long",
+      "invalidCode": "Invalid verification code",
+      "verificationSuccess": "Code verified successfully",
+      "verificationError": "An error occurred while verifying the code",
+      "codeResent": "Verification code resent successfully"
+    },
+    "code": "Verification Code",
+    "codePlaceholder": "Type the verification code",
+    "resendCode": "Didn't receive the code? Resend",
+    "resending": "Resending verification code...",
+    "wait": "Wait",
+    "secondsToResendCode": "seconds to resend code",
+    "signIn": "Already have an account? Sign in"
+  },
+  "VerifyAccount": {
+    "title": "Verify account",
+    "submit": "Verify",
+    "submitting": "Verifying...",
+    "email": "Email",
+    "emailPlaceholder": "Type the email",
+    "messages": {
+      "fieldRequired": "This field is required",
+      "validEmailRequired": "Type a valid email",
+      "verificationSuccess": "Account verified successfully. A verification code has been sent to your email",
+      "verificationError": "An error occurred while verifying the account"
+    },
+    "signIn": "Already reset your password? Sign in"
+  },
+  "ResetPassword": {
+    "title": "Reset password",
+    "submit": "Reset",
+    "submitting": "Resetting...",
+    "password": "Password",
+    "passwordConfirmation": "Confirm password",
+    "passwordPlaceholder": "Type the new password",
+    "passConfirmPlaceholder": "Confirm the new password",
+    "messages": {
+      "fieldRequired": "This field is required",
+      "resetSuccess": "Account verified successfully. You can now sign in",
+      "resetError": "An error occurred while verifying the account",
+      "passwordMinLength": "The password must have at least 8 characters",
+      "passwordMatch": "Passwords must match",
+      "passwordRegex": "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
+      "passwordResetSuccess": "Password reset successfully",
+      "passwordResetError": "An error occurred while resetting the account"
+    },
+    "signIn": "Already reset your password? Sign in"
+  },
+  "Navbar": {
+    "brand": "ACME Corp",
+    "links": {
+      "dashboard": "Dashboard",
+      "roles": "Roles",
+      "users": "Users",
+      "traces": "Traces"
+    },
+    "menu": {
+      "profile": "My profile",
+      "signedInAs": "Signed in as:",
+      "notifications": "Notifications",
+      "signOut": "Sign out"
+    },
+    "messages": {
+      "signOutSuccess": "Successfully signed out",
+      "signOutError": "An error occurred while signed out"
+    }
+  },
+  "Dashboard": {
+    "title": "Dashboard"
+  },
+  "Products": {
+    "title": "Products"
+  },
+  "Users": {
+    "user": "user",
+    "users": "users",
+    "title": "Users",
+    "messages": {
+      "fieldRequired": "This field is required",
+      "fullNameMaxLength": "The full name must have at most 50 characters",
+      "usernameMaxLength": "The username must have at most 50 characters",
+      "emailMaxLength": "The email must have at most 50 characters",
+      "rolesRequired": "At least one role is required",
+      "phoneNumberMinLength": "The phone number must have at least 8 digits including the country code, eg: +1",
+      "phoneNumberMaxLength": "The phone number must have at most 14 digits including the country code, eg: +1",
+      "validEmailRequired": "Type a valid email",
+      "passwordMinLength": "The password must have at least 8 characters",
+      "passwordMaxLength": "The password must have at most 50 characters",
+      "passwordMatch": "Passwords must match",
+      "passwordRegex": "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
+      "fetchError": "An error occurred while fetching users",
+      "createSuccess": "User created successfully",
+      "createError": "An error occurred while creating user",
+      "updateSuccess": "User updated successfully",
+      "updateError": "An error occurred while updating user",
+      "deleteSuccess": "User deleted successfully",
+      "deleteError": "An error occurred while deleting user",
+      "deleteManySuccess": "Users deleted successfully",
+      "deleteManyError": "An error occurred while deleting users"
+    },
+    "fullName": "Full Name",
+    "username": "Username",
+    "email": "Email",
+    "phone": "Phone",
+    "status": "Status",
+    "password": "Password",
+    "passwordConfirmation": "Confirm password",
+    "createdAt": "Created At",
+    "fullNamePlaceholder": "Type the name",
+    "usernamePlaceholder": "Type the username",
+    "phonePlaceholder": "Type the phone number",
+    "emailPlaceholder": "Type the email",
+    "passwordPlaceholder": "Type the password",
+    "passConfirmPlaceholder": "Confirm the password",
+    "statusPlaceholder": "Select the status",
+    "validPhoneRequired": "Type a valid phone number",
+    "actions": "Actions",
+    "statusValues": {
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "pending": "Pending"
+    },
+    "roles": "Roles",
+    "actionDescriptions": {
+      "viewDescription": "View the user's details",
+      "editDescription": "Edit the user",
+      "deleteDescription": "Permanently delete the user"
+    },
+    "searchPlaceholder": "Search users by name, username or email",
+    "noUsersFound": "No users found"
+  },
+  "Roles": {
+    "role": "role",
+    "roles": "roles",
+    "title": "Roles",
+    "messages": {
+      "fieldRequired": "This field is required",
+      "denominationMaxLength": "The denomination must have at most 100 characters",
+      "descriptionMaxLength": "The description must have at most 150 characters",
+      "permissionsRequired": "At least one permission is required",
+      "fetchError": "An error occurred while fetching roles",
+      "createSuccess": "Role created successfully",
+      "createError": "An error occurred while creating role",
+      "updateSuccess": "Role updated successfully",
+      "updateError": "An error occurred while updating role",
+      "deleteSuccess": "Role deleted successfully",
+      "deleteError": "An error occurred while deleting role",
+      "deleteManySuccess": "Roles deleted successfully",
+      "deleteManyError": "An error occurred while deleting roles"
+    },
+    "denomination": "Denomination",
+    "denominationPlaceholder": "Type the role's denomination",
+    "description": "Description",
+    "descriptionPlaceholder": "Type the role's description",
+    "permissions": "Permissions",
+    "permissionsPlaceholder": "Select the role's permissions",
+    "email": "Email",
+    "enabled": "Enabled",
+    "createdAt": "Created At",
+    "actions": "Actions",
+    "actionDescriptions": {
+      "viewDescription": "View the role's details",
+      "editDescription": "Edit the role",
+      "deleteDescription": "Permanently delete the role"
+    },
+    "searchPlaceholder": "Search roles by denomination or description",
+    "noRolesFound": "No roles found"
+  },
+  "Permissions": {
+    "permission": "permission",
+    "permissions": "permissions",
+    "messages": {
+      "fetchError": "An error occurred while fetching permissions"
+    },
+    "groupValues": {
+      "administrative": "Administrative",
+      "standard": "Standard"
+    },
+    "actionValues": {
+      "read": "Read",
+      "write": "Write",
+      "delete": "Delete"
+    },
+    "denomination": "Denomination",
+    "description": "Description",
+    "group": "Group",
+    "action": "Action",
+    "createdAt": "Created At",
+    "searchPlaceholder": "Search permissions by denomination or description",
+    "noPermissionsFound": "No permissions found"
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "notifications": "notifications",
+    "toastTitle": "New notification",
+    "message": "Message",
+    "type": "Type",
+    "markAsRead":"Mark as read",
+    "markAllAsRead":"Mark all as read",
+    "includeRead": "Include read",
+    "typeValues": {
+      "default": "Default",
+      "info": "Information",
+      "system": "System"
+    },
+    "messages": {
+      "fieldRequired": "This field is required",
+      "fetchError": "An error occurred while fetching notifications",
+      "markAsReadSuccess": "Notification marked as read successfully",
+      "markAsReadError": "An error occurred while marking as read the notification",
+      "markAllAsReadSuccess": "Notifications marked as read successfully",
+      "markAllAsReadError": "An error occurred while marking as read the notifications",
+      "deleteSuccess": "Notification deleted successfully",
+      "deleteError": "An error occurred while deleting notification",
+      "deleteManySuccess": "Notifications deleted successfully",
+      "deleteManyError": "An error occurred while deleting notifications"
+    },
+    "actionDescriptions": {
+      "viewDescription": "View the notification's details",
+      "markAsRead": "Mark notification as read",
+      "deleteDescription": "Permanently delete the notification"
+    },
+    "searchPlaceholder": "Search notifications by message",
+    "noNotificationsFound": "No notifications found"
+  },
+  "Traces": {
+    "title": "Traces",
+    "traces": "traces",
+    "description": "Description",
+    "action": "Action",
+    "ip": "IP Address",
+    "actionValues": {
+      "create": "Create",
+      "update": "Update",
+      "delete": "Delete"
+    },
+    "actionDescriptions": {
+      "viewDescription": "View the trace's details"
+    },
+    "noTracesFound": "No system traces found"
+  }
+}
