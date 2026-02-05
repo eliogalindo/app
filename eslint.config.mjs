@@ -66,7 +66,7 @@ export default defineConfig([
       // Reglas generales
       "no-console": "warn",
       "prettier/prettier": "warn",
-      "no-unused-vars": "off",
+      "no-unused-vars": "warn",
       "unused-imports/no-unused-vars": "warn",
       "unused-imports/no-unused-imports": "warn",
 
