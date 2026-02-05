@@ -3,7 +3,7 @@ import createIntlMiddleware from "next-intl/middleware";
 
 import { routing } from "./i18n/routing";
 
-const protectedRoutes = ["/en-US/management", "/es-ES/management"];
+const protectedRoutes = ["/en-US/admin", "/es-ES/admin"];
 const publicRoutes = [
   "/en-US/sign-in",
   "/es-ES/sign-in",

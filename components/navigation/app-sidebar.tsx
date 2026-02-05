@@ -9,7 +9,6 @@ import {
   IconKey,
   IconUsersGroup,
   IconZoomExclamation,
-  IconUserPlus,
   IconDeviceDesktopCog,
 } from "@tabler/icons-react";
 
