@@ -53,7 +53,7 @@ export default function SignInForm() {
 
       setAuthData(user); // Store the auth user data
 
-      router.push("/dashboard");
+      router.push("/admin");
     } else if (response?.status === 403) {
       const { detail } = await response?.json();
 

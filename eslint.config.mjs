@@ -66,7 +66,7 @@ export default defineConfig([
       // Reglas generales
       "no-console": "warn",
       "prettier/prettier": "warn",
-      "no-unused-vars": "off",
+      "no-unused-vars": "warn",
       "unused-imports/no-unused-vars": "warn",
       "unused-imports/no-unused-imports": "warn",
 
@@ -90,7 +90,7 @@ export default defineConfig([
       "react/prop-types": "off",
       "react/jsx-uses-react": "off",
       "react/react-in-jsx-scope": "off",
-      "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/exhaustive-deps": "false",
       "react/self-closing-comp": "warn",
       "react/jsx-sort-props": [
         "warn",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import {
   Modal,
   ModalContent,

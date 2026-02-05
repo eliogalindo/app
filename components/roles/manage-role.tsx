@@ -317,7 +317,7 @@ export default function ManageRole() {
 
       if (response?.status === 200) {
         toast("success", t("messages.updateSuccess"));
-        router.push("/dashboard/roles");
+        router.push("/admin/roles");
       } else {
         const { detail } = await response?.json();
 
@@ -335,7 +335,7 @@ export default function ManageRole() {
 
       if (response?.status === 200) {
         toast("success", t("messages.createSuccess"));
-        router.push("/dashboard/roles");
+        router.push("/admin/roles");
       } else {
         const { detail } = await response?.json();
 

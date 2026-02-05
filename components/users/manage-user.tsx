@@ -335,7 +335,7 @@ export default function ManageUser() {
 
       if (response?.ok) {
         toast("success", t("messages.updateSuccess"));
-        router.push("/dashboard/users");
+        router.push("/admin/users");
       } else {
         const { detail } = await response?.json();
 
@@ -353,7 +353,7 @@ export default function ManageUser() {
 
       if (response?.ok) {
         toast("success", t("messages.createSuccess"));
-        router.push("/dashboard/users");
+        router.push("/admin/users");
       } else {
         const { detail } = await response?.json();
 

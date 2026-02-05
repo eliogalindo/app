@@ -141,13 +141,16 @@
     },
     "signIn": "¿Ya restableciste la contraseña? Inicia sesión"
   },
-  "Navbar": {
+  "Navigation": {
     "brand": "ACME Corp",
     "links": {
-      "dashboard": "CMI",
-      "roles": "Roles",
-      "users": "Usuarios",
-      "traces": "Trazas"
+      "dashboard": "Panel de control",
+      "management": {
+        "main": "Administración",
+        "roles": "Roles",
+        "users": "Usuarios",
+        "traces": "Trazas"
+      }
     },
     "menu": {
       "profile": "Mi perfil",
@@ -161,7 +164,7 @@
     }
   },
   "Dashboard": {
-    "title": "CMI"
+    "title": "Panel de control"
   },
   "Products": {
     "title": "Productos"
@@ -288,8 +291,8 @@
     "toastTitle": "Nueva notificación",
     "message": "Mensaje",
     "type": "Tipo",
-    "markAsRead":"Marcar como leída",
-    "markAllAsRead":"Marcar todas como leídas",
+    "markAsRead": "Marcar como leída",
+    "markAllAsRead": "Marcar todas como leídas",
     "includeRead": "Incluir leídas",
     "typeValues": {
       "default": "Estándar",
