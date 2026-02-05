@@ -13,7 +13,7 @@ import {
 } from "@tabler/icons-react";
 
 import { usePathname } from "@/i18n/navigation";
-import { useSidebarStore } from "@/stores/useSidebarStore";
+import { useSidebarStore } from "@/stores/sidebarStore";
 import { useTranslations } from "next-intl";
 
 type SubItem = {

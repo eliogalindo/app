@@ -7,7 +7,7 @@ import { useNotificationConnection } from "@/hooks/useNotificationConnection";
 import AppSidebar from "@/components/navigation/app-sidebar";
 import Backdrop from "@/components/navigation/backdrop";
 import AppHeader from "@/components/navigation/app-header";
-import { useSidebarStore } from "@/stores/useSidebarStore";
+import { useSidebarStore } from "@/stores/sidebarStore";
 
 export default function AdminLayout({
   children,

@@ -34,13 +34,11 @@ import { API_URL } from "@/constants";
 import { ColorType } from "@/types";
 import { ConnectionStatus } from "@/enums/connectionStatus";
 import { NotificationType } from "@/enums/notificationType";
-import { useSidebarStore } from "@/stores/useSidebarStore";
+import { useSidebarStore } from "@/stores/sidebarStore";
 
 const AppHeader: React.FC = () => {
-  const pathname = usePathname();
   const router = useRouter();
   const locale = useLocale();
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const t = useTranslations("Navigation");
   const tNotification = useTranslations("Notifications");
   const tCommon = useTranslations("Common");
