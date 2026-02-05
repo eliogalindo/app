@@ -3,7 +3,7 @@ import createIntlMiddleware from "next-intl/middleware";
 
 import { routing } from "./i18n/routing";
 
-const protectedRoutes = ["/en-US/dashboard", "/es-ES/dashboard"];
+const protectedRoutes = ["/en-US/management", "/es-ES/management"];
 const publicRoutes = [
   "/en-US/sign-in",
   "/es-ES/sign-in",
@@ -38,15 +38,11 @@ export default async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.nextUrl));
   }
 
-  if (
-    isPublicRoute &&
-    session &&
-    !req.nextUrl.pathname.startsWith("/dashboard")
-  ) {
-    return NextResponse.redirect(new URL(`/${locale}/dashboard`, req.nextUrl));
+  if (isPublicRoute && session && !req.nextUrl.pathname.startsWith("/admin")) {
+    return NextResponse.redirect(new URL(`/${locale}/admin`, req.nextUrl));
   }
 
-  if (!session && req.nextUrl.pathname.startsWith(`/${locale}/dashboard`)) {
+  if (!session && req.nextUrl.pathname.startsWith(`/${locale}/admin`)) {
     return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.nextUrl));
   }
 

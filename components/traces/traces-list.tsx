@@ -2,7 +2,7 @@
 
 import { Selection, SortDescriptor } from "@heroui/react";
 import { useTranslations, useLocale } from "next-intl";
-import React, {
+import {
   ChangeEvent,
   Key,
   useCallback,
@@ -133,7 +133,7 @@ export default function TracesList() {
     switch (columnKey) {
       case "description":
         return (
-          <p className="max-w-xs lg:max-w-2xl whitespace-nowrap text-small text-bold text-ellipsis overflow-hidden">
+          <p className="max-w-xs lg:max-w-lg whitespace-nowrap text-small text-bold text-ellipsis overflow-hidden">
             {cellValue}
           </p>
         );

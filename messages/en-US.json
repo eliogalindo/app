@@ -145,13 +145,16 @@
     },
     "signIn": "Already reset your password? Sign in"
   },
-  "Navbar": {
+  "Navigation": {
     "brand": "ACME Corp",
     "links": {
       "dashboard": "Dashboard",
-      "roles": "Roles",
-      "users": "Users",
-      "traces": "Traces"
+      "management": {
+        "main": "Management",
+        "roles": "Roles",
+        "users": "Users",
+        "traces": "Traces"
+      }
     },
     "menu": {
       "profile": "My profile",
@@ -294,8 +297,8 @@
     "toastTitle": "New notification",
     "message": "Message",
     "type": "Type",
-    "markAsRead":"Mark as read",
-    "markAllAsRead":"Mark all as read",
+    "markAsRead": "Mark as read",
+    "markAllAsRead": "Mark all as read",
     "includeRead": "Include read",
     "typeValues": {
       "default": "Default",
