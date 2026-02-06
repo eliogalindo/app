@@ -237,7 +237,7 @@ export default function UsersList() {
   const renderActions = (user: IUser) => (
     <Dropdown backdrop="transparent">
       <DropdownTrigger>
-        <Button isIconOnly size="sm" variant="light">
+        <Button as={"div"} isIconOnly size="sm" variant="light">
           <IconDotsVertical className="text-default-300" />
         </Button>
       </DropdownTrigger>
@@ -412,7 +412,7 @@ export default function UsersList() {
           </div>
         </div>
 
-        {/* Info and Paginator per page */}
+        {/* Info and Rows per page select */}
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
             Total: {totalUsers} {t("users")}
@@ -487,7 +487,7 @@ export default function UsersList() {
       {topContent}
 
       {/* --- DESKTOP VIEW (TABLE) --- */}
-      <div className="hidden md:block">
+      <div className="hidden xl:block">
         <Table
           isHeaderSticky
           aria-label="Users List Table"
@@ -529,7 +529,7 @@ export default function UsersList() {
       </div>
 
       {/* --- MOBILE VIEW (CARDS) --- */}
-      <div className="block md:hidden">
+      <div className="block xl:hidden">
         {isLoading ? (
           <div className="flex justify-center p-10">
             <Spinner size="lg" />

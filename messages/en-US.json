@@ -29,6 +29,7 @@
     "columns": "Columns",
     "previous": "Previous",
     "next": "Next",
+    "noDescription": "No description provided",
     "deleteConfirmationTitle": "Delete Confirmation",
     "deleteConfirmationMessage": "Are you sure you want to delete the selected items? This action cannot be undone",
     "details": "Details",
@@ -258,6 +259,7 @@
     "permissionsPlaceholder": "Select the role's permissions",
     "email": "Email",
     "enabled": "Enabled",
+    "disabled": "Disabled",
     "createdAt": "Created At",
     "actions": "Actions",
     "actionDescriptions": {

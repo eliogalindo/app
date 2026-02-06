@@ -141,7 +141,7 @@ export default function UserDetails() {
 
   const topContent = useMemo(() => {
     return (
-      <div className="flex flex-col mt-2 gap-4">
+      <div className="flex flex-col mt-2 gap-4 mb-4">
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
             Total: {roles.length} {t("roles")}
@@ -196,7 +196,7 @@ export default function UserDetails() {
       {isLoading ? (
         <LoadingSkeleton />
       ) : (
-        <div className="w-full flex flex-col justify-start items-start text-center sm:flex-row sm:items-start sm:justify-start sm:text-start gap-4">
+        <div className="w-full flex flex-col justify-between items-start text-center sm:flex-row sm:items-start sm:justify-start sm:text-start gap-4">
           <figure className="size-fit w-full flex justify-start">
             <Avatar
               alt="User profile image"
@@ -316,19 +316,6 @@ export default function UserDetails() {
                     <CardBody>
                       <div className="flex flex-col gap-2 text-small">
                         <div className="flex flex-col gap-1 mb-2">
-                          <span className="text-default-500 font-semibold">
-                            {tRoles("enabled")}:
-                          </span>
-                          <span className="text-default-600 line-clamp-2">
-                            <Chip
-                              color={role.enabled ? "success" : "danger"}
-                              size="sm"
-                              variant="flat"
-                              className="mt-1"
-                            >
-                              {role.enabled ? tCommon("yes") : tCommon("no")}
-                            </Chip>
-                          </span>
                           <span className="text-default-500 font-semibold">
                             {tRoles("description")}:
                           </span>

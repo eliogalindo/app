@@ -1,6 +1,13 @@
 "use client";
 
-import { Chip, Selection, Skeleton } from "@heroui/react";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Chip,
+  Selection,
+  Skeleton,
+} from "@heroui/react";
 import { useTranslations, useLocale } from "next-intl";
 import { useParams } from "next/navigation";
 import React, { Key, useCallback, useEffect, useMemo, useState } from "react";
@@ -136,7 +143,7 @@ export default function RoleDetails() {
     });
   const topContent = useMemo(() => {
     return (
-      <div className="flex flex-col mt-2 gap-4">
+      <div className="flex flex-col mt-2 gap-4 mb-4">
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
             Total: {permissions.length} {t("permissions")}
@@ -179,7 +186,7 @@ export default function RoleDetails() {
       {isLoading ? (
         <LoadingSkeleton />
       ) : (
-        <div className="w-full flex flex-col justify-start items-start text-center sm:flex-row sm:items-start sm:justify-start sm:text-start gap-4">
+        <div className="w-full flex flex-col justify-start items-start sm:flex-row sm:items-start sm:justify-start sm:text-start gap-4">
           <div className="w-full flex flex-col">
             <div>
               <h3 className="text-lg font-semibold">{t("denomination")}:</h3>
@@ -208,44 +215,99 @@ export default function RoleDetails() {
       )}
       <Divider className="my-2" />
       <h3 className="text-lg font-semibold">{t("permissions")}</h3>
-      <Table
-        isHeaderSticky
-        aria-label="Permissions List"
-        bottomContentPlacement="outside"
-        classNames={{
-          wrapper: "max-h-[382px]",
-        }}
-        selectedKeys={selectedKeys}
-        selectionMode="none"
-        topContent={topContent}
-        topContentPlacement="outside"
-      >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
-              allowsSorting={column.sortable}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          emptyContent={tPermissions("noPermissionsFound")}
-          isLoading={isLoading}
-          items={permissions}
-          loadingContent={<Spinner size="lg" />}
-        >
-          {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+      <div className="w-full">
+        {topContent}
+
+        {/* --- DESKTOP VIEW (TABLE) --- */}
+        <div className="hidden xl:block">
+          <Table
+            isHeaderSticky
+            aria-label="Roles List Table"
+            classNames={{
+              wrapper: "max-h-[382px]",
+            }}
+            selectedKeys={selectedKeys}
+          >
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn
+                  key={column.uid}
+                  align={column.uid === "actions" ? "center" : "start"}
+                  allowsSorting={column.sortable}
+                >
+                  {column.name}
+                </TableColumn>
               )}
-            </TableRow>
+            </TableHeader>
+            <TableBody
+              emptyContent={tPermissions("noPermissionsFound")}
+              isLoading={isLoading}
+              items={permissions}
+              loadingContent={<Spinner size="lg" />}
+            >
+              {(item) => (
+                <TableRow key={item.id}>
+                  {(columnKey) => (
+                    <TableCell>{renderCell(item, columnKey)}</TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* --- MOBILE VIEW (CARDS) --- */}
+        <div className="block xl:hidden">
+          {isLoading ? (
+            <div className="flex justify-center p-10">
+              <Spinner size="lg" />
+            </div>
+          ) : permissions.length === 0 ? (
+            <div className="text-center p-4 text-default-400">
+              {t("noRolesFound")}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              {permissions.map((permission) => {
+                const isSelected =
+                  selectedKeys === "all" ||
+                  selectedKeys.has(permission.id.toString());
+
+                return (
+                  <Card
+                    key={permission.id}
+                    className="w-full transition-all border-2 border-transparent"
+                  >
+                    <CardHeader className="justify-between items-start gap-3">
+                      <div className="flex gap-3 items-center">
+                        <div className="flex flex-col">
+                          <p className="text-medium font-bold">
+                            {getTranslation(permission)?.denomination}
+                          </p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <Divider />
+                    <CardBody>
+                      <div className="flex flex-col gap-2 text-small">
+                        <div className="flex flex-col gap-1 mb-2">
+                          <span className="text-default-500 font-semibold">
+                            {t("description")}:
+                          </span>
+                          <span className="text-default-600 line-clamp-2">
+                            {getTranslation(permission)?.denomination ||
+                              tCommon("noDescription")}
+                          </span>
+                        </div>
+                      </div>
+                    </CardBody>
+                  </Card>
+                );
+              })}
+            </div>
           )}
-        </TableBody>
-      </Table>
+        </div>
+      </div>
       <Divider className="my-4" />
       <div className="w-full flex justify-end gap-3">
         <Button color="primary" onPress={router.back}>

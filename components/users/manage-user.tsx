@@ -68,7 +68,6 @@ export default function ManageUser() {
   const columns = [
     { name: tRoles("denomination"), uid: "denomination", sortable: true },
     { name: tRoles("description"), uid: "description", sortable: true },
-    { name: tRoles("enabled"), uid: "enabled", sortable: true },
   ];
 
   const statusOptions = [
@@ -161,16 +160,6 @@ export default function ManageUser() {
           <p className="max-w-xs lg:max-w-sm whitespace-nowrap text-small overflow-hidden text-ellipsis text-bold">
             {cellValue}
           </p>
-        );
-      case "enabled":
-        return (
-          <Chip
-            color={role.enabled ? "success" : "danger"}
-            size="sm"
-            variant="flat"
-          >
-            {role.enabled ? tCommon("yes") : tCommon("no")}
-          </Chip>
         );
       default:
         return cellValue as string;
@@ -457,7 +446,7 @@ export default function ManageUser() {
       </div>
       <Form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col w-full sm:flex-row justify-between gap-4">
-          <div className="flex justify-center items-center">
+          <div className="flex justify-start items-center">
             <UserImageInput
               avatarPreview={avatarPreview}
               handleFormImage={(image: File | null, imageUrl: string) => {
@@ -619,7 +608,7 @@ export default function ManageUser() {
           {topContent}
 
           {/* --- DESKTOP VIEW (TABLE) --- */}
-          <div className="hidden md:block">
+          <div className="hidden xl:block">
             <Table
               isHeaderSticky
               aria-label="Roles List Table"
@@ -661,7 +650,7 @@ export default function ManageUser() {
           </div>
 
           {/* --- MOBILE VIEW (CARDS) --- */}
-          <div className="block md:hidden">
+          <div className="block xl:hidden">
             {isLoading ? (
               <div className="flex justify-center p-10">
                 <Spinner size="lg" />
@@ -689,32 +678,21 @@ export default function ManageUser() {
                       onPress={() => handleCardSelection(role.id.toString())}
                     >
                       <CardHeader className="justify-between items-start gap-3">
-                        <div className="pointer-events-none">
-                          <Checkbox isSelected={isSelected} />
-                        </div>
-                        <div className="flex flex-col">
-                          <p className="text-small font-bold">
-                            {role.denomination}
-                          </p>
+                        <div className="flex gap-3 justify-between items-center">
+                          <div className="pointer-events-none">
+                            <Checkbox isSelected={isSelected} />
+                          </div>
+                          <div className="flex flex-col">
+                            <p className="text-small font-bold">
+                              {role.denomination}
+                            </p>
+                          </div>
                         </div>
                       </CardHeader>
                       <Divider />
                       <CardBody>
                         <div className="flex flex-col gap-2 text-small">
                           <div className="flex flex-col gap-1 mb-2">
-                            <span className="text-default-500 font-semibold">
-                              {tRoles("enabled")}:
-                            </span>
-                            <span className="text-default-600 line-clamp-2">
-                              <Chip
-                                color={role.enabled ? "success" : "danger"}
-                                size="sm"
-                                variant="flat"
-                                className="mt-1"
-                              >
-                                {role.enabled ? tCommon("yes") : tCommon("no")}
-                              </Chip>
-                            </span>
                             <span className="text-default-500 font-semibold">
                               {tRoles("description")}:
                             </span>

@@ -217,7 +217,7 @@ export default function RolesList() {
   const renderActions = (role: IRole) => (
     <Dropdown backdrop="transparent">
       <DropdownTrigger>
-        <Button isIconOnly size="sm" variant="light">
+        <Button as={"div"} isIconOnly size="sm" variant="light">
           <IconDotsVertical className="text-default-300" />
         </Button>
       </DropdownTrigger>
@@ -458,7 +458,7 @@ export default function RolesList() {
       {topContent}
 
       {/* --- DESKTOP VIEW (TABLE) --- */}
-      <div className="hidden md:block">
+      <div className="hidden xl:block">
         <Table
           isHeaderSticky
           aria-label="Roles List Table"
@@ -500,7 +500,7 @@ export default function RolesList() {
       </div>
 
       {/* --- MOBILE VIEW (CARDS) --- */}
-      <div className="block md:hidden">
+      <div className="block xl:hidden">
         {isLoading ? (
           <div className="flex justify-center p-10">
             <Spinner size="lg" />
@@ -542,25 +542,20 @@ export default function RolesList() {
                       <div onPointerDown={(e) => e.stopPropagation()}>
                         {renderActions(role)}
                       </div>
+                      <Chip
+                        color={role.enabled ? "success" : "danger"}
+                        size="sm"
+                        variant="flat"
+                        className="mt-1"
+                      >
+                        {role.enabled ? t("enabled") : t("disabled")}
+                      </Chip>
                     </div>
                   </CardHeader>
                   <Divider />
                   <CardBody>
                     <div className="flex flex-col gap-2 text-small">
                       <div className="flex flex-col gap-1 mb-2">
-                        <span className="text-default-500 font-semibold">
-                          {t("enabled")}:
-                        </span>
-                        <span className="text-default-600 line-clamp-2">
-                          <Chip
-                            color={role.enabled ? "success" : "danger"}
-                            size="sm"
-                            variant="flat"
-                            className="mt-1"
-                          >
-                            {role.enabled ? tCommon("yes") : tCommon("no")}
-                          </Chip>
-                        </span>
                         <span className="text-default-500 font-semibold">
                           {t("description")}:
                         </span>
