@@ -1,6 +1,13 @@
 "use client";
 
-import { Selection, SortDescriptor } from "@heroui/react";
+import {
+  Selection,
+  SortDescriptor,
+  Card,
+  CardHeader,
+  CardBody,
+  Divider,
+} from "@heroui/react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   ChangeEvent,
@@ -28,24 +35,22 @@ import {
 import { IconEye, IconDotsVertical } from "@tabler/icons-react";
 
 import { ITrace } from "@/interfaces/notification";
-import { NotificationType } from "@/enums/notificationType";
 import { utcToLocal } from "@/helpers/dateFormatter";
 import { TraceAction } from "@/enums/traceAction";
 import { tracesService } from "@/services/tracesService";
 
-const INITIAL_VISIBLE_COLUMNS = [
-  "description",
-  "action",
-  "ip",
-  "createdAt",
-  "actions",
-];
-
 export default function TracesList() {
   const locale = useLocale();
-
   const t = useTranslations("Traces");
   const tCommon = useTranslations("Common");
+
+  const INITIAL_VISIBLE_COLUMNS = [
+    "description",
+    "action",
+    "ip",
+    "createdAt",
+    "actions",
+  ];
 
   const columns = [
     { name: t("description"), uid: "description", sortable: true },
@@ -55,14 +60,12 @@ export default function TracesList() {
     { name: tCommon("actions"), uid: "actions" },
   ];
 
-  const traceActions: Record<NotificationType, string> = {
+  const traceActions: Record<string, string> = {
     [TraceAction.Create]: t("actionValues.create"),
     [TraceAction.Update]: t("actionValues.update"),
     [TraceAction.Delete]: t("actionValues.delete"),
   };
 
-  const [filterValue, setFilterValue] = useState("");
-  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
   const [visibleColumns] = useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS),
   );
@@ -78,7 +81,6 @@ export default function TracesList() {
   const [totalTraces, setTotalTraces] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch users from the backend when debouncedFilter changes
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -94,7 +96,6 @@ export default function TracesList() {
 
       if (response?.ok) {
         const { items, count } = await response.json();
-
         setTraces(items);
         setTotalTraces(count);
       } else {
@@ -103,75 +104,73 @@ export default function TracesList() {
       }
       setIsLoading(false);
     };
-
     void fetchData();
-  }, [rowsPerPage, page, sortDescriptor, visibleColumns]);
-
-  const notificationsSelected = useMemo(() => {
-    if (selectedKeys === "all") {
-      // Select all permissions
-      return traces.map((notification) => notification.id);
-    }
-    // Otherwise, select only the checked ones
-
-    return Array.from(selectedKeys) as string[];
-  }, [selectedKeys, traces]);
-
-  const hasSearchFilter = Boolean(filterValue);
+  }, [rowsPerPage, page, sortDescriptor, locale]);
 
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
-
     return columns.filter((column) =>
       Array.from(visibleColumns).includes(column.uid),
     );
   }, [visibleColumns]);
 
-  const renderCell = useCallback((trace: ITrace, columnKey: Key) => {
-    const cellValue = trace[columnKey as keyof ITrace];
+  // Reusable Actions Menu
+  const renderActions = (trace: ITrace) => (
+    <Dropdown backdrop="transparent">
+      <DropdownTrigger>
+        <Button isIconOnly size="sm" variant="light">
+          <IconDotsVertical className="text-default-300" />
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu aria-label="Actions">
+        <DropdownItem
+          key="view"
+          description={t("actionDescriptions.viewDescription")}
+          startContent={<IconEye size={20} />}
+        >
+          {tCommon("view")}
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  );
 
-    switch (columnKey) {
-      case "description":
-        return (
-          <p className="max-w-xs lg:max-w-lg whitespace-nowrap text-small text-bold text-ellipsis overflow-hidden">
-            {cellValue}
-          </p>
-        );
-      case "action":
-        return (
-          <p className="text-bold text-small"> {traceActions[trace.action]}</p>
-        );
-      case "ip":
-        return <p className="text-bold text-small"> {cellValue}</p>;
-      case "createdAt":
-        return (
-          <p className="text-bold text-small">{utcToLocal(trace.createdAt)}</p>
-        );
-      case "actions":
-        return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown backdrop="transparent">
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <IconDotsVertical className="text-default-300" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Actions">
-                <DropdownItem
-                  key="view"
-                  description={t("actionDescriptions.viewDescription")}
-                  startContent={<IconEye size={20} />}
-                >
-                  {tCommon("view")}
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+  const renderCell = useCallback(
+    (trace: ITrace, columnKey: Key) => {
+      const cellValue = trace[columnKey as keyof ITrace];
+
+      switch (columnKey) {
+        case "description":
+          return (
+            <p className="max-w-xs lg:max-w-lg whitespace-nowrap text-small text-bold text-ellipsis overflow-hidden">
+              {cellValue}
+            </p>
+          );
+        case "action":
+          return (
+            <p className="text-bold text-small capitalize">
+              {traceActions[trace.action]}
+            </p>
+          );
+        case "ip":
+          return <p className="text-bold text-small">{cellValue}</p>;
+        case "createdAt":
+          return (
+            <p className="text-bold text-small">
+              {utcToLocal(trace.createdAt)}
+            </p>
+          );
+        case "actions":
+          return (
+            <div className="relative flex justify-end items-center gap-2">
+              {renderActions(trace)}
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [traceActions, tCommon],
+  );
 
   const onNextPage = useCallback(() => {
     setPage((prev) => prev + 1);
@@ -189,17 +188,12 @@ export default function TracesList() {
     [],
   );
 
-  const onSearchChange = useCallback((value?: string) => {
-    setFilterValue(value || "");
-    setPage(1);
-  }, []);
-
   const totalPages = Math.ceil(totalTraces / rowsPerPage) || 1;
 
+  // --- Top Content (Responsive structure like Users/Roles) ---
   const topContent = useMemo(() => {
     return (
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-end gap-3 items-end" />
+      <div className="flex flex-col gap-4 mb-4">
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
             Total: {totalTraces} {t("traces")}
@@ -219,25 +213,13 @@ export default function TracesList() {
         </div>
       </div>
     );
-  }, [
-    filterValue,
-    visibleColumns,
-    onSearchChange,
-    onRowsPerPageChange,
-    totalTraces,
-    hasSearchFilter,
-    rowsPerPage,
-    notificationsSelected,
-  ]);
+  }, [totalTraces, rowsPerPage, onRowsPerPageChange, t, tCommon]);
 
+  // --- Bottom Content (Pagination like Users/Roles) ---
   const bottomContent = useMemo(() => {
     return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? tCommon("allItemsSelected")
-            : `${selectedKeys.size} ${tCommon("of")} ${totalTraces} ${tCommon("selected")}`}
-        </span>
+      <div className="py-2 px-2 flex justify-between items-center mt-4">
+        <span className="w-[30%] text-small text-default-400" />
         <Pagination
           isCompact
           showControls
@@ -267,50 +249,105 @@ export default function TracesList() {
         </div>
       </div>
     );
-  }, [selectedKeys, traces.length, page, totalPages]);
+  }, [page, totalPages, onPreviousPage, onNextPage, tCommon]);
 
   return (
-    <Table
-      isHeaderSticky
-      aria-label="Traces List"
-      bottomContent={bottomContent}
-      bottomContentPlacement="outside"
-      classNames={{
-        wrapper: "max-h-[382px]",
-      }}
-      selectedKeys={selectedKeys}
-      selectionMode="none"
-      sortDescriptor={sortDescriptor}
-      topContent={topContent}
-      topContentPlacement="outside"
-      onSelectionChange={setSelectedKeys}
-      onSortChange={setSortDescriptor}
-    >
-      <TableHeader columns={headerColumns}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting={column.sortable}
-          >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody
-        emptyContent={t("noTracesFound")}
-        isLoading={isLoading}
-        items={traces}
-        loadingContent={<Spinner size="lg" />}
-      >
-        {(item) => (
-          <TableRow key={item.id}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
+    <div className="w-full">
+      {topContent}
+
+      {/* --- DESKTOP VIEW (TABLE) --- */}
+      <div className="hidden md:block">
+        <Table
+          isHeaderSticky
+          aria-label="Traces List Table"
+          classNames={{
+            wrapper: "max-h-[382px]",
+          }}
+          sortDescriptor={sortDescriptor}
+          onSortChange={setSortDescriptor}
+        >
+          <TableHeader columns={headerColumns}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                align={column.uid === "actions" ? "center" : "start"}
+                allowsSorting={column.sortable}
+              >
+                {column.name}
+              </TableColumn>
             )}
-          </TableRow>
+          </TableHeader>
+          <TableBody
+            emptyContent={t("noTracesFound")}
+            isLoading={isLoading}
+            items={traces}
+            loadingContent={<Spinner size="lg" />}
+          >
+            {(item) => (
+              <TableRow key={item.id}>
+                {(columnKey) => (
+                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* --- MOBILE VIEW (CARDS) --- */}
+      <div className="block md:hidden">
+        {isLoading ? (
+          <div className="flex justify-center p-10">
+            <Spinner size="lg" />
+          </div>
+        ) : traces.length === 0 ? (
+          <div className="text-center p-4 text-default-400">
+            {t("noTracesFound")}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {traces.map((trace) => (
+              <Card
+                key={trace.id}
+                className="w-full border-2 border-transparent transition-all"
+              >
+                <CardHeader className="justify-between items-start gap-3">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-small font-bold line-clamp-2">
+                      {trace.description}
+                    </p>
+                    <p className="text-tiny text-default-400">IP: {trace.ip}</p>
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    {renderActions(trace)}
+                  </div>
+                </CardHeader>
+                <Divider />
+                <CardBody>
+                  <div className="flex flex-col gap-2 text-small">
+                    <div className="flex justify-between">
+                      <span className="text-default-500 font-semibold">
+                        {t("action")}:
+                      </span>
+                      <span className="font-semibold">
+                        {traceActions[trace.action]}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-default-500 font-semibold">
+                        {tCommon("createdAt")}:
+                      </span>
+                      <span>{utcToLocal(trace.createdAt)}</span>
+                    </div>
+                  </div>
+                </CardBody>
+              </Card>
+            ))}
+          </div>
         )}
-      </TableBody>
-    </Table>
+      </div>
+
+      {bottomContent}
+    </div>
   );
 }

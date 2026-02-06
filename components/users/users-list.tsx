@@ -5,9 +5,14 @@ import {
   ChipProps,
   SortDescriptor,
   useDisclosure,
+  Card,
+  CardHeader,
+  CardBody,
+  Divider,
+  Checkbox,
 } from "@heroui/react";
 import { useTranslations, useLocale } from "next-intl";
-import React, {
+import {
   ChangeEvent,
   Key,
   useCallback,
@@ -114,11 +119,8 @@ export default function UsersList() {
 
   const usersSelected = useMemo(() => {
     if (selectedKeys === "all") {
-      // Select all permissions
       return users.map((user) => user.id);
     }
-    // Otherwise, select only the checked ones
-
     return Array.from(selectedKeys) as string[];
   }, [selectedKeys, users]);
 
@@ -134,11 +136,10 @@ export default function UsersList() {
       if (response?.ok) {
         toast("success", t("messages.deleteSuccess"));
         setSelectedKeys(new Set());
-        setRefresh((prev) => !prev); // Trigger a refresh
+        setRefresh((prev) => !prev);
         onOpenChange();
       } else {
         const { detail } = await response?.json();
-
         toast("danger", detail);
       }
     } else {
@@ -147,27 +148,23 @@ export default function UsersList() {
       if (response?.ok) {
         toast("success", t("messages.deleteManySuccess"));
         setSelectedKeys(new Set());
-        setRefresh((prev) => !prev); // Trigger a refresh
+        setRefresh((prev) => !prev);
         onOpenChange();
       } else {
         const { detail } = await response?.json();
-
         toast("danger", detail);
       }
     }
     setIsDeleting(false);
   };
 
-  // Debounce filterValue changes
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedFilter(filterValue);
-    }, 400); // 400 ms debounce
-
+    }, 400);
     return () => clearTimeout(handler);
   }, [filterValue]);
 
-  // Fetch users from the backend when debouncedFilter changes
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -177,22 +174,19 @@ export default function UsersList() {
           pageNumber: page,
           orderBy: sortDescriptor.column.toString(),
           desc: sortDescriptor.direction === "descending",
-          filter: debouncedFilter, // use debounced value here
+          filter: debouncedFilter,
         },
         locale,
       );
 
       if (response?.ok) {
         const { items, count } = await response.json();
-
         setUsers(items);
         setTotalUsers(count);
       } else {
         const { detail } = await response?.json();
-
         setUsers([]);
         setTotalUsers(0);
-
         toast("danger", detail);
       }
       setIsLoading(false);
@@ -203,20 +197,10 @@ export default function UsersList() {
     rowsPerPage,
     page,
     sortDescriptor,
-    debouncedFilter, // use debounced value here
+    debouncedFilter,
     visibleColumns,
     refresh,
   ]);
-
-  const hasSearchFilter = Boolean(filterValue);
-
-  const headerColumns = useMemo(() => {
-    if (visibleColumns === "all") return columns;
-
-    return columns.filter((column) =>
-      Array.from(visibleColumns).includes(column.uid),
-    );
-  }, [visibleColumns]);
 
   const toast = (color: ColorType, description: string) =>
     addToast({
@@ -225,6 +209,71 @@ export default function UsersList() {
       timeout: 3000,
       shouldShowTimeoutProgress: true,
     });
+
+  const headerColumns = useMemo(() => {
+    if (visibleColumns === "all") return columns;
+    return columns.filter((column) =>
+      Array.from(visibleColumns).includes(column.uid),
+    );
+  }, [visibleColumns]);
+
+  // --- Helpers for Mobile/Card View ---
+
+  const handleCardSelection = (id: string) => {
+    setSelectedKeys((prev) => {
+      const currentKeys = new Set(
+        prev === "all" ? users.map((u) => u.id.toString()) : prev,
+      );
+      if (currentKeys.has(id)) {
+        currentKeys.delete(id);
+      } else {
+        currentKeys.add(id);
+      }
+      return new Set(currentKeys);
+    });
+  };
+
+  // Reusable Actions Menu
+  const renderActions = (user: IUser) => (
+    <Dropdown backdrop="transparent">
+      <DropdownTrigger>
+        <Button isIconOnly size="sm" variant="light">
+          <IconDotsVertical className="text-default-300" />
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu aria-label="Actions">
+        <DropdownItem
+          key="view"
+          description={t("actionDescriptions.viewDescription")}
+          startContent={<IconEye size={20} />}
+          onPress={() => onView(user.id)}
+        >
+          {tCommon("view")}
+        </DropdownItem>
+        <DropdownItem
+          key="edit"
+          description={t("actionDescriptions.editDescription")}
+          startContent={<IconEdit size={20} />}
+          onPress={() => onEdit(user.id)}
+        >
+          {tCommon("edit")}
+        </DropdownItem>
+        <DropdownItem
+          key="delete"
+          className="text-danger"
+          color="danger"
+          description={t("actionDescriptions.deleteDescription")}
+          startContent={<IconTrash size={20} />}
+          onPress={() => {
+            setSelectedKeys(new Set([user.id.toString()]));
+            onOpen();
+          }}
+        >
+          {tCommon("delete")}
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  );
 
   const renderCell = useCallback((user: IUser, columnKey: Key) => {
     const cellValue = user[columnKey as keyof IUser];
@@ -260,44 +309,7 @@ export default function UsersList() {
       case "actions":
         return (
           <div className="relative flex justify-end items-center gap-2">
-            <Dropdown backdrop="transparent">
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <IconDotsVertical className="text-default-300" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Actions">
-                <DropdownItem
-                  key="view"
-                  description={t("actionDescriptions.viewDescription")}
-                  startContent={<IconEye size={20} />}
-                  onPress={() => onView(user.id)}
-                >
-                  {tCommon("view")}
-                </DropdownItem>
-                <DropdownItem
-                  key="edit"
-                  description={t("actionDescriptions.editDescription")}
-                  startContent={<IconEdit size={20} />}
-                  onPress={() => onEdit(user.id)}
-                >
-                  {tCommon("edit")}
-                </DropdownItem>
-                <DropdownItem
-                  key="delete"
-                  className="text-danger"
-                  color="danger"
-                  description={t("actionDescriptions.deleteDescription")}
-                  startContent={<IconTrash size={20} />}
-                  onPress={() => {
-                    setSelectedKeys(new Set([user.id.toString()]));
-                    onOpen();
-                  }}
-                >
-                  {tCommon("delete")}
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            {renderActions(user)}
           </div>
         );
       default:
@@ -333,10 +345,13 @@ export default function UsersList() {
 
   const totalPages = Math.ceil(totalUsers / rowsPerPage) || 1;
 
+  // --- Top Content (Responsive) ---
   const topContent = useMemo(() => {
     return (
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-end">
+      <div className="flex flex-col gap-4 mb-4">
+        {/* Main container: Column in mobile, Row in desktop */}
+        <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
+          {/* Search input */}
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
@@ -346,17 +361,22 @@ export default function UsersList() {
             onClear={onClear}
             onValueChange={onSearchChange}
           />
-          <div className="flex gap-3">
-            {usersSelected.length > 1 && (
+
+          {/*Buttons group: Column in mobile (w-full), row in desktop (w-auto) */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            {/* Delete button: Shows up in mobile list and desktop row */}
+            {usersSelected.length > 0 && (
               <Button
                 color="danger"
                 endContent={<IconTrash size="20" />}
                 variant="flat"
                 onPress={onOpen}
+                className="w-full sm:w-auto"
               >
-                {tCommon("delete")}
+                {tCommon("delete")} ({usersSelected.length})
               </Button>
             )}
+
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button
@@ -379,15 +399,20 @@ export default function UsersList() {
                 ))}
               </DropdownMenu>
             </Dropdown>
+
+            {/* Add Button */}
             <Button
               color="primary"
               endContent={<IconPlus />}
               onPress={() => router.push(`${pathname}/add`)}
+              className="w-full sm:w-auto"
             >
               {tCommon("addNew")}
             </Button>
           </div>
         </div>
+
+        {/* Info and Paginator per page */}
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
             Total: {totalUsers} {t("users")}
@@ -413,14 +438,14 @@ export default function UsersList() {
     onSearchChange,
     onRowsPerPageChange,
     totalUsers,
-    hasSearchFilter,
     rowsPerPage,
     usersSelected,
   ]);
 
+  // --- Bottom Content (Pagination) ---
   const bottomContent = useMemo(() => {
     return (
-      <div className="py-2 px-2 flex justify-between items-center">
+      <div className="py-2 px-2 flex justify-between items-center mt-4">
         <span className="w-[30%] text-small text-default-400">
           {selectedKeys === "all"
             ? tCommon("allItemsSelected")
@@ -455,52 +480,145 @@ export default function UsersList() {
         </div>
       </div>
     );
-  }, [selectedKeys, users.length, page, totalPages]);
+  }, [selectedKeys, users.length, page, totalPages, totalUsers]);
 
   return (
-    <>
-      <Table
-        isHeaderSticky
-        aria-label="Users List"
-        bottomContent={bottomContent}
-        bottomContentPlacement="outside"
-        classNames={{
-          wrapper: "max-h-[382px]",
-        }}
-        selectedKeys={selectedKeys}
-        selectionMode="multiple"
-        sortDescriptor={sortDescriptor}
-        topContent={topContent}
-        topContentPlacement="outside"
-        onSelectionChange={setSelectedKeys}
-        onSortChange={setSortDescriptor}
-      >
-        <TableHeader columns={headerColumns}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
-              allowsSorting={column.sortable}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          emptyContent={t("noUsersFound")}
-          isLoading={isLoading}
-          items={users}
-          loadingContent={<Spinner size="lg" />}
+    <div className="w-full">
+      {topContent}
+
+      {/* --- DESKTOP VIEW (TABLE) --- */}
+      <div className="hidden md:block">
+        <Table
+          isHeaderSticky
+          aria-label="Users List Table"
+          classNames={{
+            wrapper: "max-h-[382px]",
+          }}
+          selectedKeys={selectedKeys}
+          selectionMode="multiple"
+          sortDescriptor={sortDescriptor}
+          onSelectionChange={setSelectedKeys}
+          onSortChange={setSortDescriptor}
         >
-          {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+          <TableHeader columns={headerColumns}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                align={column.uid === "actions" ? "center" : "start"}
+                allowsSorting={column.sortable}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody
+            emptyContent={t("noUsersFound")}
+            isLoading={isLoading}
+            items={users}
+            loadingContent={<Spinner size="lg" />}
+          >
+            {(item) => (
+              <TableRow key={item.id}>
+                {(columnKey) => (
+                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* --- MOBILE VIEW (CARDS) --- */}
+      <div className="block md:hidden">
+        {isLoading ? (
+          <div className="flex justify-center p-10">
+            <Spinner size="lg" />
+          </div>
+        ) : users.length === 0 ? (
+          <div className="text-center p-4 text-default-400">
+            {t("noUsersFound")}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {users.map((user) => {
+              const isSelected =
+                selectedKeys === "all" || selectedKeys.has(user.id.toString());
+
+              return (
+                <Card
+                  key={user.id}
+                  isPressable
+                  className={`w-full transition-all ${
+                    isSelected
+                      ? "border-2 border-primary"
+                      : "border-2 border-transparent"
+                  }`}
+                  onPress={() => handleCardSelection(user.id.toString())}
+                >
+                  <CardHeader className="justify-between items-start gap-3">
+                    <div className="flex gap-3 items-center">
+                      {/* Visual Checkbox, without pointer to avoid blocking the click on the card */}
+                      <div className="pointer-events-none">
+                        <Checkbox isSelected={isSelected} />
+                      </div>
+
+                      <User
+                        avatarProps={{
+                          radius: "full",
+                          src: user?.avatar
+                            ? `${API_URL}/uploads/${user?.avatar}`
+                            : defaultAvatar.src,
+                        }}
+                        description={user.email}
+                        name={user.fullName}
+                      />
+                    </div>
+
+                    <div className="flex flex-col items-end gap-1">
+                      {/* stopPropagation avoids selecting the card when opening the menu */}
+                      <div onPointerDown={(e) => e.stopPropagation()}>
+                        {renderActions(user)}
+                      </div>
+                      <Chip
+                        color={statusColorMap[user.status]}
+                        size="sm"
+                        variant="flat"
+                        className="mt-1"
+                      >
+                        {statusLabelMap[user.status]}
+                      </Chip>
+                    </div>
+                  </CardHeader>
+                  <Divider />
+                  <CardBody>
+                    <div className="flex flex-col gap-2 text-small">
+                      <div className="flex justify-between">
+                        <span className="text-default-500">
+                          {t("username")}:
+                        </span>
+                        <span>{user.username}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-default-500">{t("phone")}:</span>
+                        <span>{user.phone || "-"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-default-500">
+                          {tCommon("createdAt")}:
+                        </span>
+                        <span>{utcToLocal(user.createdAt)}</span>
+                      </div>
+                    </div>
+                  </CardBody>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {bottomContent}
+
       <DeleteConfirmationModal
         isDeleting={isDeleting}
         isOpen={isOpen}
@@ -508,6 +626,6 @@ export default function UsersList() {
         onDeleteAction={onDelete}
         onOpenChangeAction={onOpenChange}
       />
-    </>
+    </div>
   );
 }
