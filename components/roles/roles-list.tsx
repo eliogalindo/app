@@ -542,20 +542,25 @@ export default function RolesList() {
                       <div onPointerDown={(e) => e.stopPropagation()}>
                         {renderActions(role)}
                       </div>
-                      <Chip
-                        color={role.enabled ? "success" : "danger"}
-                        size="sm"
-                        variant="flat"
-                        className="mt-1"
-                      >
-                        {role.enabled ? tCommon("yes") : tCommon("no")}
-                      </Chip>
                     </div>
                   </CardHeader>
                   <Divider />
                   <CardBody>
                     <div className="flex flex-col gap-2 text-small">
                       <div className="flex flex-col gap-1 mb-2">
+                        <span className="text-default-500 font-semibold">
+                          {t("enabled")}:
+                        </span>
+                        <span className="text-default-600 line-clamp-2">
+                          <Chip
+                            color={role.enabled ? "success" : "danger"}
+                            size="sm"
+                            variant="flat"
+                            className="mt-1"
+                          >
+                            {role.enabled ? tCommon("yes") : tCommon("no")}
+                          </Chip>
+                        </span>
                         <span className="text-default-500 font-semibold">
                           {t("description")}:
                         </span>

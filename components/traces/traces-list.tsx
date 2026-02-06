@@ -316,7 +316,6 @@ export default function TracesList() {
                     <p className="text-small font-bold line-clamp-2">
                       {trace.description}
                     </p>
-                    <p className="text-tiny text-default-400">IP: {trace.ip}</p>
                   </div>
                   <div className="flex flex-col items-end gap-1">
                     {renderActions(trace)}
@@ -325,6 +324,12 @@ export default function TracesList() {
                 <Divider />
                 <CardBody>
                   <div className="flex flex-col gap-2 text-small">
+                    <div className="flex justify-between">
+                      <span className="text-default-500 font-semibold">
+                        {t("ip")}:
+                      </span>
+                      <span className="font-semibold">{trace.ip}</span>
+                    </div>
                     <div className="flex justify-between">
                       <span className="text-default-500 font-semibold">
                         {t("action")}:

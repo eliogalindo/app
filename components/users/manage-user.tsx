@@ -29,6 +29,10 @@ import {
   Chip,
   Select,
   SelectItem,
+  CardBody,
+  Checkbox,
+  CardHeader,
+  Card,
 } from "@heroui/react";
 import { useFormik } from "formik";
 import {
@@ -428,6 +432,22 @@ export default function ManageUser() {
       shouldShowTimeoutProgress: true,
     });
 
+  // --- Helpers for Mobile/Card View ---
+
+  const handleCardSelection = (id: string) => {
+    setSelectedKeys((prev) => {
+      const currentKeys = new Set(
+        prev === "all" ? roles.map((r) => r.id.toString()) : prev,
+      );
+      if (currentKeys.has(id)) {
+        currentKeys.delete(id);
+      } else {
+        currentKeys.add(id);
+      }
+      return new Set(currentKeys);
+    });
+  };
+
   return (
     <div className="w-full py-8 md:py-10">
       <div className="mb-8">
@@ -595,48 +615,124 @@ export default function ManageUser() {
         </div>
         <Divider className="my-2" />
         <h3 className="text-lg font-semibold">{t("roles")}</h3>
-        <Table
-          isHeaderSticky
-          aria-label="Roles List"
-          bottomContent={bottomContent}
-          bottomContentPlacement="outside"
-          classNames={{
-            wrapper: "max-h-[382px]",
-          }}
-          selectedKeys={selectedKeys}
-          selectionMode="multiple"
-          sortDescriptor={sortDescriptor}
-          topContent={topContent}
-          topContentPlacement="outside"
-          onSelectionChange={setSelectedKeys}
-          onSortChange={setSortDescriptor}
-        >
-          <TableHeader columns={columns}>
-            {(column) => (
-              <TableColumn
-                key={column.uid}
-                align={column.uid === "actions" ? "center" : "start"}
-                allowsSorting={column.sortable}
-              >
-                {column.name}
-              </TableColumn>
-            )}
-          </TableHeader>
-          <TableBody
-            emptyContent={tRoles("noRolesFound")}
-            isLoading={isLoading}
-            items={roles}
-            loadingContent={<Spinner size="lg" />}
-          >
-            {(item) => (
-              <TableRow key={item.id}>
-                {(columnKey) => (
-                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+        <div className="w-full">
+          {topContent}
+
+          {/* --- DESKTOP VIEW (TABLE) --- */}
+          <div className="hidden md:block">
+            <Table
+              isHeaderSticky
+              aria-label="Roles List Table"
+              classNames={{
+                wrapper: "max-h-[382px]",
+              }}
+              selectedKeys={selectedKeys}
+              selectionMode="multiple"
+              sortDescriptor={sortDescriptor}
+              onSelectionChange={setSelectedKeys}
+              onSortChange={setSortDescriptor}
+            >
+              <TableHeader columns={columns}>
+                {(column) => (
+                  <TableColumn
+                    key={column.uid}
+                    align={column.uid === "actions" ? "center" : "start"}
+                    allowsSorting={column.sortable}
+                  >
+                    {column.name}
+                  </TableColumn>
                 )}
-              </TableRow>
+              </TableHeader>
+              <TableBody
+                emptyContent={tRoles("noRolesFound")}
+                isLoading={isLoading}
+                items={roles}
+                loadingContent={<Spinner size="lg" />}
+              >
+                {(item) => (
+                  <TableRow key={item.id}>
+                    {(columnKey) => (
+                      <TableCell>{renderCell(item, columnKey)}</TableCell>
+                    )}
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* --- MOBILE VIEW (CARDS) --- */}
+          <div className="block md:hidden">
+            {isLoading ? (
+              <div className="flex justify-center p-10">
+                <Spinner size="lg" />
+              </div>
+            ) : roles.length === 0 ? (
+              <div className="text-center p-4 text-default-400">
+                {tRoles("noRolesFound")}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {roles.map((role) => {
+                  const isSelected =
+                    selectedKeys === "all" ||
+                    selectedKeys.has(role.id.toString());
+
+                  return (
+                    <Card
+                      key={role.id}
+                      isPressable
+                      className={`w-full transition-all ${
+                        isSelected
+                          ? "border-2 border-primary"
+                          : "border-2 border-transparent"
+                      }`}
+                      onPress={() => handleCardSelection(role.id.toString())}
+                    >
+                      <CardHeader className="justify-between items-start gap-3">
+                        <div className="pointer-events-none">
+                          <Checkbox isSelected={isSelected} />
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="text-small font-bold">
+                            {role.denomination}
+                          </p>
+                        </div>
+                      </CardHeader>
+                      <Divider />
+                      <CardBody>
+                        <div className="flex flex-col gap-2 text-small">
+                          <div className="flex flex-col gap-1 mb-2">
+                            <span className="text-default-500 font-semibold">
+                              {tRoles("enabled")}:
+                            </span>
+                            <span className="text-default-600 line-clamp-2">
+                              <Chip
+                                color={role.enabled ? "success" : "danger"}
+                                size="sm"
+                                variant="flat"
+                                className="mt-1"
+                              >
+                                {role.enabled ? tCommon("yes") : tCommon("no")}
+                              </Chip>
+                            </span>
+                            <span className="text-default-500 font-semibold">
+                              {tRoles("description")}:
+                            </span>
+                            <span className="text-default-600 line-clamp-2">
+                              {role.description || tCommon("noDescription")}
+                            </span>
+                          </div>
+                        </div>
+                      </CardBody>
+                    </Card>
+                  );
+                })}
+              </div>
             )}
-          </TableBody>
-        </Table>
+          </div>
+
+          {bottomContent}
+        </div>
         <Divider className="my-2" />
         <div className="w-full flex justify-end gap-3">
           <Button onPress={router.back}>{tCommon("cancel")}</Button>
