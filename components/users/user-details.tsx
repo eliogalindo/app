@@ -51,7 +51,6 @@ export default function UserDetails() {
       sortable: false,
     },
     { name: tRoles("description"), uid: "description", sortable: false },
-    { name: tRoles("enabled"), uid: "enabled", sortable: false },
   ];
 
   const statusColorMap: Record<number, ChipProps["color"]> = {
@@ -87,16 +86,6 @@ export default function UserDetails() {
           <div className="flex flex-col">
             <p className="text-bold text-small">{cellValue}</p>
           </div>
-        );
-      case "enabled":
-        return (
-          <Chip
-            color={role.enabled ? "success" : "danger"}
-            size="sm"
-            variant="flat"
-          >
-            {role.enabled ? tCommon("yes") : tCommon("no")}
-          </Chip>
         );
       default:
         return cellValue as string;
