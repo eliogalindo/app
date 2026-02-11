@@ -156,6 +156,7 @@ export default function RolesList() {
           orderBy: sortDescriptor.column.toString(),
           desc: sortDescriptor.direction === "descending",
           filter: debouncedFilter,
+          enabledOnly: false,
         },
         locale,
       );
