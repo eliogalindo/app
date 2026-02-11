@@ -29,6 +29,7 @@
     "columns": "Columnas",
     "previous": "Anterior",
     "next": "Siguiente",
+    "noDescription": "No se ha provisto una descripción",
     "deleteConfirmationTitle": "Confirmación de eliminación",
     "deleteConfirmationMessage": "¿Estás seguro de que deseas eliminar los elementos seleccionados? Esta acción no se puede deshacer.",
     "details": "Detalles",
@@ -141,13 +142,16 @@
     },
     "signIn": "¿Ya restableciste la contraseña? Inicia sesión"
   },
-  "Navbar": {
+  "Navigation": {
     "brand": "ACME Corp",
     "links": {
-      "dashboard": "CMI",
-      "roles": "Roles",
-      "users": "Usuarios",
-      "traces": "Trazas"
+      "dashboard": "Panel de control",
+      "management": {
+        "main": "Administración",
+        "roles": "Roles",
+        "users": "Usuarios",
+        "traces": "Trazas"
+      }
     },
     "menu": {
       "profile": "Mi perfil",
@@ -161,7 +165,7 @@
     }
   },
   "Dashboard": {
-    "title": "CMI"
+    "title": "Panel de control"
   },
   "Products": {
     "title": "Productos"
@@ -249,6 +253,7 @@
     "permissions": "Permisos",
     "permissionsPlaceholder": "Selecciona los permisos del rol",
     "enabled": "Habilitado",
+    "disabled": "Deshabilitado",
     "createdAt": "Creado el",
     "actions": "Acciones",
     "actionDescriptions": {
@@ -288,8 +293,8 @@
     "toastTitle": "Nueva notificación",
     "message": "Mensaje",
     "type": "Tipo",
-    "markAsRead":"Marcar como leída",
-    "markAllAsRead":"Marcar todas como leídas",
+    "markAsRead": "Marcar como leída",
+    "markAllAsRead": "Marcar todas como leídas",
     "includeRead": "Incluir leídas",
     "typeValues": {
       "default": "Estándar",

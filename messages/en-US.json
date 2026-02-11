@@ -29,6 +29,7 @@
     "columns": "Columns",
     "previous": "Previous",
     "next": "Next",
+    "noDescription": "No description provided",
     "deleteConfirmationTitle": "Delete Confirmation",
     "deleteConfirmationMessage": "Are you sure you want to delete the selected items? This action cannot be undone",
     "details": "Details",
@@ -145,13 +146,16 @@
     },
     "signIn": "Already reset your password? Sign in"
   },
-  "Navbar": {
+  "Navigation": {
     "brand": "ACME Corp",
     "links": {
       "dashboard": "Dashboard",
-      "roles": "Roles",
-      "users": "Users",
-      "traces": "Traces"
+      "management": {
+        "main": "Management",
+        "roles": "Roles",
+        "users": "Users",
+        "traces": "Traces"
+      }
     },
     "menu": {
       "profile": "My profile",
@@ -255,6 +259,7 @@
     "permissionsPlaceholder": "Select the role's permissions",
     "email": "Email",
     "enabled": "Enabled",
+    "disabled": "Disabled",
     "createdAt": "Created At",
     "actions": "Actions",
     "actionDescriptions": {
@@ -294,8 +299,8 @@
     "toastTitle": "New notification",
     "message": "Message",
     "type": "Type",
-    "markAsRead":"Mark as read",
-    "markAllAsRead":"Mark all as read",
+    "markAsRead": "Mark as read",
+    "markAllAsRead": "Mark all as read",
     "includeRead": "Include read",
     "typeValues": {
       "default": "Default",

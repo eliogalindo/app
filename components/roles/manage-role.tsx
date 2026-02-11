@@ -27,6 +27,10 @@ import {
   Form,
   Divider,
   Switch,
+  Card,
+  CardHeader,
+  Checkbox,
+  CardBody,
 } from "@heroui/react";
 import { useFormik } from "formik";
 import { IconListSearch } from "@tabler/icons-react";
@@ -141,6 +145,23 @@ export default function ManageRole() {
     },
     [permissions],
   );
+
+  // --- Helpers for Mobile/Card View ---
+
+  const handleCardSelection = (id: string) => {
+    setSelectedKeys((prev) => {
+      const currentKeys = new Set(
+        prev === "all" ? permissions.map((r) => r.id.toString()) : prev,
+      );
+      if (currentKeys.has(id)) {
+        currentKeys.delete(id);
+      } else {
+        currentKeys.add(id);
+      }
+      return new Set(currentKeys);
+    });
+  };
+
   const renderCell = useCallback((permission: IPermission, columnKey: Key) => {
     const cellValue = permission[columnKey as keyof IPermission];
     const translation = getTranslation(permission);
@@ -205,7 +226,7 @@ export default function ManageRole() {
 
   const topContent = useMemo(() => {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mb-4">
         <div className="flex justify-between gap-3 items-end">
           <Input
             isClearable
@@ -317,7 +338,7 @@ export default function ManageRole() {
 
       if (response?.status === 200) {
         toast("success", t("messages.updateSuccess"));
-        router.push("/dashboard/roles");
+        router.push("/admin/roles");
       } else {
         const { detail } = await response?.json();
 
@@ -335,7 +356,7 @@ export default function ManageRole() {
 
       if (response?.status === 200) {
         toast("success", t("messages.createSuccess"));
-        router.push("/dashboard/roles");
+        router.push("/admin/roles");
       } else {
         const { detail } = await response?.json();
 
@@ -455,49 +476,117 @@ export default function ManageRole() {
           {t("enabled")}
         </Switch>
         <Divider className="my-2" />
-        <h3 className="text-lg font-semibold">{t("permissions")}</h3>
-        <Table
-          isHeaderSticky
-          aria-label="Permissions List"
-          bottomContent={bottomContent}
-          bottomContentPlacement="outside"
-          classNames={{
-            wrapper: "max-h-[382px]",
-          }}
-          selectedKeys={selectedKeys}
-          selectionMode="multiple"
-          sortDescriptor={sortDescriptor}
-          topContent={topContent}
-          topContentPlacement="outside"
-          onSelectionChange={setSelectedKeys}
-          onSortChange={setSortDescriptor}
-        >
-          <TableHeader columns={columns}>
-            {(column) => (
-              <TableColumn
-                key={column.uid}
-                align={column.uid === "actions" ? "center" : "start"}
-                allowsSorting={column.sortable}
-              >
-                {column.name}
-              </TableColumn>
-            )}
-          </TableHeader>
-          <TableBody
-            emptyContent={tPermissions("noPermissionsFound")}
-            isLoading={isLoading}
-            items={permissions}
-            loadingContent={<Spinner size="lg" />}
-          >
-            {(item) => (
-              <TableRow key={item.id}>
-                {(columnKey) => (
-                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+        <h3 className="text-lg font-semibold">{t("permissions")}</h3>{" "}
+        <div className="w-full">
+          {topContent}
+
+          {/* --- DESKTOP VIEW (TABLE) --- */}
+          <div className="hidden xl:block">
+            <Table
+              isHeaderSticky
+              aria-label="Roles List Table"
+              classNames={{
+                wrapper: "max-h-[382px]",
+              }}
+              selectedKeys={selectedKeys}
+              selectionMode="multiple"
+              sortDescriptor={sortDescriptor}
+              onSelectionChange={setSelectedKeys}
+              onSortChange={setSortDescriptor}
+            >
+              <TableHeader columns={columns}>
+                {(column) => (
+                  <TableColumn
+                    key={column.uid}
+                    align={column.uid === "actions" ? "center" : "start"}
+                    allowsSorting={column.sortable}
+                  >
+                    {column.name}
+                  </TableColumn>
                 )}
-              </TableRow>
+              </TableHeader>
+              <TableBody
+                emptyContent={tPermissions("noPermissionsFound")}
+                isLoading={isLoading}
+                items={permissions}
+                loadingContent={<Spinner size="lg" />}
+              >
+                {(item) => (
+                  <TableRow key={item.id}>
+                    {(columnKey) => (
+                      <TableCell>{renderCell(item, columnKey)}</TableCell>
+                    )}
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* --- MOBILE VIEW (CARDS) --- */}
+          <div className="block xl:hidden">
+            {isLoading ? (
+              <div className="flex justify-center p-10">
+                <Spinner size="lg" />
+              </div>
+            ) : permissions.length === 0 ? (
+              <div className="text-center p-4 text-default-400">
+                {t("noRolesFound")}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {permissions.map((permission) => {
+                  const isSelected =
+                    selectedKeys === "all" ||
+                    selectedKeys.has(permission.id.toString());
+
+                  return (
+                    <Card
+                      key={permission.id}
+                      isPressable
+                      className={`w-full transition-all ${
+                        isSelected
+                          ? "border-2 border-primary"
+                          : "border-2 border-transparent"
+                      }`}
+                      onPress={() =>
+                        handleCardSelection(permission.id.toString())
+                      }
+                    >
+                      <CardHeader className="justify-between items-start gap-3">
+                        <div className="flex gap-3 items-center">
+                          <div className="pointer-events-none">
+                            <Checkbox isSelected={isSelected} />
+                          </div>
+                          <div className="flex flex-col">
+                            <p className="text-medium font-bold">
+                              {getTranslation(permission)?.denomination}
+                            </p>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <Divider />
+                      <CardBody>
+                        <div className="flex flex-col gap-2 text-small">
+                          <div className="flex flex-col gap-1 mb-2">
+                            <span className="text-default-500 font-semibold">
+                              {t("description")}:
+                            </span>
+                            <span className="text-default-600 line-clamp-2">
+                              {getTranslation(permission)?.denomination ||
+                                tCommon("noDescription")}
+                            </span>
+                          </div>
+                        </div>
+                      </CardBody>
+                    </Card>
+                  );
+                })}
+              </div>
             )}
-          </TableBody>
-        </Table>
+          </div>
+
+          {bottomContent}
+        </div>
         <Divider className="my-2" />
         <div className="w-full flex justify-end gap-3">
           <Button onPress={router.back}>{tCommon("cancel")}</Button>

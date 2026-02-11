@@ -1,6 +1,15 @@
 "use client";
 
-import { Selection, SortDescriptor, Switch } from "@heroui/react";
+import {
+  Selection,
+  SortDescriptor,
+  Switch,
+  Card,
+  CardHeader,
+  CardBody,
+  Divider,
+  Checkbox,
+} from "@heroui/react";
 import { useTranslations, useLocale } from "next-intl";
 import React, {
   ChangeEvent,
@@ -17,6 +26,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Input,
   Button,
   DropdownTrigger,
   Dropdown,
@@ -33,6 +43,7 @@ import {
   IconDotsVertical,
   IconSquareCheck,
   IconCopyCheck,
+  IconListSearch,
 } from "@tabler/icons-react";
 import clsx from "clsx";
 
@@ -45,14 +56,13 @@ import { NotificationType } from "@/enums/notificationType";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { utcToLocal } from "@/helpers/dateFormatter";
 
-const INITIAL_VISIBLE_COLUMNS = ["message", "type", "createdAt", "actions"];
-
 export default function NotificationsList() {
   const locale = useLocale();
   const { notificationsSummary } = useNotificationStore();
-
   const t = useTranslations("Notifications");
   const tCommon = useTranslations("Common");
+
+  const INITIAL_VISIBLE_COLUMNS = ["message", "type", "createdAt", "actions"];
 
   const columns = [
     { name: t("message"), uid: "message", sortable: true },
@@ -69,7 +79,7 @@ export default function NotificationsList() {
 
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
-  const [visibleColumns] = useState<Selection>(
+  const [visibleColumns, setVisibleColumns] = useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS),
   );
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -79,7 +89,6 @@ export default function NotificationsList() {
   });
   const [page, setPage] = useState(1);
 
-  // Back-end data
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const [totalNotifications, setTotalNotifications] = useState(0);
   const [debouncedFilter, setDebouncedFilter] = useState(filterValue);
@@ -89,16 +98,11 @@ export default function NotificationsList() {
   const [includeRead, setIncludeRead] = useState(true);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  // Debounce filterValue changes
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedFilter(filterValue);
-    }, 400); // 400 ms debounce
-
+    const handler = setTimeout(() => setDebouncedFilter(filterValue), 400);
     return () => clearTimeout(handler);
   }, [filterValue]);
 
-  // Fetch users from the backend when debouncedFilter changes
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -108,7 +112,7 @@ export default function NotificationsList() {
           pageNumber: page,
           orderBy: sortDescriptor.column.toString(),
           desc: sortDescriptor.direction === "descending",
-          filter: debouncedFilter, // use debounced value here
+          filter: debouncedFilter,
           includeRead: includeRead,
         },
         locale,
@@ -116,126 +120,154 @@ export default function NotificationsList() {
 
       if (response?.ok) {
         const { items, count } = await response.json();
-
         setNotifications(items);
         setTotalNotifications(count);
       } else {
         setNotifications([]);
         setTotalNotifications(0);
-
         toast("danger", t("messages.fetchError"));
       }
       setIsLoading(false);
     };
-
     void fetchData();
   }, [
     rowsPerPage,
     page,
     sortDescriptor,
-    debouncedFilter, // use debounced value here
-    visibleColumns,
+    debouncedFilter,
     refresh,
     includeRead,
     notificationsSummary,
+    locale,
   ]);
 
   const notificationsSelected = useMemo(() => {
-    if (selectedKeys === "all") {
-      // Select all permissions
-      return notifications.map((notification) => notification.id);
-    }
-    // Otherwise, select only the checked ones
-
+    if (selectedKeys === "all") return notifications.map((n) => n.id);
     return Array.from(selectedKeys) as string[];
   }, [selectedKeys, notifications]);
 
   const onMarkAsRead = async (id: string) => {
     const result = await notificationsService.markAsRead(id, locale);
-
-    if (result?.ok) {
-      toast("success", t("messages.markAsReadSuccess"));
-    } else {
+    if (result?.ok) toast("success", t("messages.markAsReadSuccess"));
+    else {
       const { detail } = await result?.json();
-
       toast("danger", detail);
     }
   };
+
   const onMarkAllAsRead = async () => {
     const result = await notificationsService.markAllAsRead(locale);
-
-    if (result?.ok) {
-      toast("success", t("messages.markAllAsReadSuccess"));
-    } else {
+    if (result?.ok) toast("success", t("messages.markAllAsReadSuccess"));
+    else {
       const { detail } = await result?.json();
-
       toast("danger", detail);
     }
   };
 
   const onDelete = async () => {
     setIsDeleting(true);
-    if (notificationsSelected.length === 1) {
-      const [id] = notificationsSelected;
-      const response = await notificationsService.delete(id);
+    const response =
+      notificationsSelected.length === 1
+        ? await notificationsService.delete(notificationsSelected[0])
+        : await notificationsService.deleteMany(notificationsSelected);
 
-      if (response?.ok) {
-        toast("success", t("messages.deleteSuccess"));
-        setSelectedKeys(new Set());
-        setRefresh((prev) => !prev); // Trigger a refresh
-        onOpenChange();
-      } else {
-        toast("danger", t("messages.deleteError"));
-      }
-    } else {
-      const response = await notificationsService.deleteMany(
-        notificationsSelected,
+    if (response?.ok) {
+      toast(
+        "success",
+        notificationsSelected.length === 1
+          ? t("messages.deleteSuccess")
+          : t("messages.deleteManySuccess"),
       );
-
-      if (response?.ok) {
-        toast("success", t("messages.deleteManySuccess"));
-        setSelectedKeys(new Set());
-        setRefresh((prev) => !prev); // Triggers a refresh
-        onOpenChange();
-      } else {
-        toast("danger", t("messages.deleteManyError"));
-      }
+      setSelectedKeys(new Set());
+      setRefresh((prev) => !prev);
+      onOpenChange();
+    } else {
+      toast(
+        "danger",
+        notificationsSelected.length === 1
+          ? t("messages.deleteError")
+          : t("messages.deleteManyError"),
+      );
     }
     setIsDeleting(false);
   };
 
   const toast = (color: ColorType, description: string) =>
     addToast({
-      color: color,
-      description: description,
+      color,
+      description,
       timeout: 3000,
       shouldShowTimeoutProgress: true,
     });
 
-  const hasSearchFilter = Boolean(filterValue);
-
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
-
-    return columns.filter((column) =>
-      Array.from(visibleColumns).includes(column.uid),
+    return columns.filter((col) =>
+      Array.from(visibleColumns).includes(col.uid),
     );
   }, [visibleColumns]);
+
+  const handleCardSelection = (id: string) => {
+    setSelectedKeys((prev) => {
+      const currentKeys = new Set(
+        prev === "all" ? notifications.map((n) => n.id.toString()) : prev,
+      );
+      if (currentKeys.has(id)) currentKeys.delete(id);
+      else currentKeys.add(id);
+      return new Set(currentKeys);
+    });
+  };
+
+  const renderActions = (notification: INotification) => (
+    <Dropdown backdrop="transparent">
+      <DropdownTrigger>
+        <Button isIconOnly size="sm" variant="light">
+          <IconDotsVertical className="text-default-300" />
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu aria-label="Actions">
+        <DropdownItem key="view" startContent={<IconEye size={20} />}>
+          {tCommon("view")}
+        </DropdownItem>
+        <DropdownItem
+          key="markAsRead"
+          isDisabled={notification.isRead}
+          startContent={<IconSquareCheck size={20} />}
+          onPress={() => onMarkAsRead(notification.id.toString())}
+        >
+          {t("markAsRead")}
+        </DropdownItem>
+        <DropdownItem
+          key="delete"
+          className="text-danger"
+          color="danger"
+          startContent={<IconTrash size={20} />}
+          onPress={() => {
+            setSelectedKeys(new Set([notification.id.toString()]));
+            onOpen();
+          }}
+        >
+          {tCommon("delete")}
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  );
 
   const renderCell = useCallback(
     (notification: INotification, columnKey: Key) => {
       const cellValue = notification[columnKey as keyof INotification];
+      const textClass = clsx("text-small", {
+        "text-bold": notification.isRead,
+        "font-extrabold": !notification.isRead,
+      });
 
       switch (columnKey) {
         case "message":
           return (
             <p
               className={clsx(
-                "max-w-xs lg:max-w-2xl whitespace-nowrap text-small overflow-hidden text-ellipsis",
-                {
-                  "text-bold ": notification.isRead,
-                  "font-extrabold": !notification.isRead,
-                },
+                "max-w-xs lg:max-w-2xl whitespace-nowrap overflow-hidden text-ellipsis",
+                textClass,
               )}
             >
               {cellValue}
@@ -243,84 +275,32 @@ export default function NotificationsList() {
           );
         case "type":
           return (
-            <p
-              className={clsx("text-small", {
-                "text-bold ": notification.isRead,
-                "font-extrabold": !notification.isRead,
-              })}
-            >
+            <p className={textClass}>
               {notificationTypeValues[notification.type]}
             </p>
           );
         case "createdAt":
           return (
-            <p
-              className={clsx("text-small", {
-                "text-bold ": notification.isRead,
-                "font-extrabold": !notification.isRead,
-              })}
-            >
-              {utcToLocal(notification.createdAt)}
-            </p>
+            <p className={textClass}>{utcToLocal(notification.createdAt)}</p>
           );
         case "actions":
           return (
-            <div className="relative flex justify-end items-center gap-2">
-              <Dropdown backdrop="transparent">
-                <DropdownTrigger>
-                  <Button isIconOnly size="sm" variant="light">
-                    <IconDotsVertical className="text-default-300" />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu aria-label="Actions">
-                  <DropdownItem
-                    key="view"
-                    description={t("actionDescriptions.viewDescription")}
-                    startContent={<IconEye size={20} />}
-                  >
-                    {tCommon("view")}
-                  </DropdownItem>
-                  <DropdownItem
-                    key="markAsRead"
-                    description={t("actionDescriptions.markAsRead")}
-                    isDisabled={notification.isRead}
-                    startContent={<IconSquareCheck size={20} />}
-                    onPress={() => onMarkAsRead(notification.id.toString())}
-                  >
-                    {t("markAsRead")}
-                  </DropdownItem>
-                  <DropdownItem
-                    key="delete"
-                    className="text-danger"
-                    color="danger"
-                    description={t("actionDescriptions.deleteDescription")}
-                    startContent={<IconTrash size={20} />}
-                    onPress={() => {
-                      setSelectedKeys(new Set([notification.id.toString()]));
-                      onOpen();
-                    }}
-                  >
-                    {tCommon("delete")}
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
+            <div className="flex justify-end items-center">
+              {renderActions(notification)}
             </div>
           );
         default:
           return cellValue;
       }
     },
-    [],
+    [notificationTypeValues, tCommon, t],
   );
 
-  const onNextPage = useCallback(() => {
-    setPage((prev) => prev + 1);
-  }, []);
-
-  const onPreviousPage = useCallback(() => {
-    setPage((prev) => Math.max(prev - 1, 1));
-  }, []);
-
+  const onNextPage = useCallback(() => setPage((prev) => prev + 1), []);
+  const onPreviousPage = useCallback(
+    () => setPage((prev) => Math.max(prev - 1, 1)),
+    [],
+  );
   const onRowsPerPageChange = useCallback(
     (e: ChangeEvent<HTMLSelectElement>) => {
       setRowsPerPage(Number(e.target.value));
@@ -329,49 +309,52 @@ export default function NotificationsList() {
     [],
   );
 
-  const onSearchChange = useCallback((value?: string) => {
-    setFilterValue(value || "");
-    setPage(1);
-  }, []);
-
-  const totalPages = Math.ceil(totalNotifications / rowsPerPage) || 1;
-
-  const topContent = useMemo(() => {
-    return (
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-end gap-3 items-end">
-          <div className="flex gap-3">
+  const topContent = useMemo(
+    () => (
+      <div className="flex flex-col gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
+          <Input
+            isClearable
+            className="w-full sm:max-w-[44%]"
+            //placeholder={tCommon("search")}
+            placeholder="Search"
+            startContent={<IconListSearch stroke={1} />}
+            value={filterValue}
+            onClear={() => setFilterValue("")}
+            onValueChange={setFilterValue}
+          />
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto items-center">
             <Switch
-              id="icludeRead"
               isSelected={includeRead}
-              name="icludeRead"
-              onChange={() => setIncludeRead((prevState) => !prevState)}
+              onChange={() => setIncludeRead(!includeRead)}
             >
               {t("includeRead")}
             </Switch>
-            {notificationsSelected.length > 1 && (
+            <div className="flex gap-2 w-full sm:w-auto">
+              {notificationsSelected.length > 0 && (
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onPress={onOpen}
+                  className="flex-1"
+                >
+                  {tCommon("delete")} ({notificationsSelected.length})
+                </Button>
+              )}
               <Button
-                color="danger"
-                endContent={<IconTrash size="20" />}
-                variant="flat"
-                onPress={onOpen}
+                color="primary"
+                endContent={<IconCopyCheck size="20" />}
+                onPress={onMarkAllAsRead}
+                className="flex-1"
               >
-                {tCommon("delete")}
+                {t("markAllAsRead")}
               </Button>
-            )}
-            <Button
-              color="primary"
-              endContent={<IconCopyCheck />}
-              isDisabled={notifications.every((n) => n.isRead)}
-              onPress={() => onMarkAllAsRead()}
-            >
-              {t("markAllAsRead")}
-            </Button>
+            </div>
           </div>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total: {totalNotifications} {t("notifications")}
+            Total {totalNotifications} {t("notifications")}
           </span>
           <label className="flex items-center text-default-400 text-small">
             {tCommon("rowsPerPage")}:
@@ -387,33 +370,32 @@ export default function NotificationsList() {
           </label>
         </div>
       </div>
-    );
-  }, [
-    filterValue,
-    visibleColumns,
-    onSearchChange,
-    onRowsPerPageChange,
-    totalNotifications,
-    hasSearchFilter,
-    rowsPerPage,
-    notificationsSelected,
-  ]);
+    ),
+    [
+      filterValue,
+      includeRead,
+      notificationsSelected.length,
+      totalNotifications,
+      rowsPerPage,
+      t,
+      tCommon,
+      onRowsPerPageChange,
+      onMarkAllAsRead,
+      onOpen,
+    ],
+  );
 
-  const bottomContent = useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? tCommon("allItemsSelected")
-            : `${selectedKeys.size} ${tCommon("of")} ${totalNotifications} ${tCommon("selected")}`}
-        </span>
+  const bottomContent = useMemo(
+    () => (
+      <div className="py-2 px-2 flex justify-between items-center mt-4">
+        <span className="w-[30%] text-small text-default-400" />
         <Pagination
           isCompact
           showControls
           showShadow
           color="primary"
           page={page}
-          total={totalPages}
+          total={Math.ceil(totalNotifications / rowsPerPage) || 1}
           onChange={setPage}
         />
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
@@ -426,7 +408,9 @@ export default function NotificationsList() {
             {tCommon("previous")}
           </Button>
           <Button
-            isDisabled={page === totalPages}
+            isDisabled={
+              page === (Math.ceil(totalNotifications / rowsPerPage) || 1)
+            }
             size="sm"
             variant="flat"
             onPress={onNextPage}
@@ -435,53 +419,138 @@ export default function NotificationsList() {
           </Button>
         </div>
       </div>
-    );
-  }, [selectedKeys, notifications.length, page, totalPages]);
+    ),
+    [
+      page,
+      totalNotifications,
+      rowsPerPage,
+      onPreviousPage,
+      onNextPage,
+      tCommon,
+    ],
+  );
 
   return (
-    <>
-      <Table
-        isHeaderSticky
-        aria-label="Notifications List"
-        bottomContent={bottomContent}
-        bottomContentPlacement="outside"
-        classNames={{
-          wrapper: "max-h-[382px]",
-        }}
-        selectedKeys={selectedKeys}
-        selectionMode="multiple"
-        sortDescriptor={sortDescriptor}
-        topContent={topContent}
-        topContentPlacement="outside"
-        onSelectionChange={setSelectedKeys}
-        onSortChange={setSortDescriptor}
-      >
-        <TableHeader columns={headerColumns}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
-              allowsSorting={column.sortable}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          emptyContent={t("noNotificationsFound")}
-          isLoading={isLoading}
-          items={notifications}
-          loadingContent={<Spinner size="lg" />}
+    <div className="w-full">
+      {topContent}
+
+      {/* DESKTOP VIEW */}
+      <div className="hidden md:block">
+        <Table
+          isHeaderSticky
+          aria-label="Notifications Table"
+          selectedKeys={selectedKeys}
+          selectionMode="multiple"
+          sortDescriptor={sortDescriptor}
+          onSelectionChange={setSelectedKeys}
+          onSortChange={setSortDescriptor}
+          classNames={{ wrapper: "max-h-[382px]" }}
         >
-          {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+          <TableHeader columns={headerColumns}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                align={column.uid === "actions" ? "center" : "start"}
+                allowsSorting={column.sortable}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody
+            emptyContent={t("noNotificationsFound")}
+            isLoading={isLoading}
+            items={notifications}
+            loadingContent={<Spinner size="lg" />}
+          >
+            {(item) => (
+              <TableRow key={item.id}>
+                {(columnKey) => (
+                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* MOBILE VIEW */}
+      <div className="block md:hidden">
+        {isLoading ? (
+          <div className="flex justify-center p-10">
+            <Spinner size="lg" />
+          </div>
+        ) : notifications.length === 0 ? (
+          <div className="text-center p-4 text-default-400">
+            {t("noNotificationsFound")}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {notifications.map((notification) => (
+              <Card
+                key={notification.id}
+                className={clsx(
+                  "w-full border-2 transition-all",
+                  selectedKeys !== "all" &&
+                    (selectedKeys as Set<string>).has(
+                      notification.id.toString(),
+                    )
+                    ? "border-primary"
+                    : "border-transparent",
+                )}
+              >
+                <CardHeader className="justify-between items-start gap-3">
+                  <div className="flex gap-3 items-start w-full">
+                    <Checkbox
+                      isSelected={
+                        selectedKeys === "all" ||
+                        (selectedKeys as Set<string>).has(
+                          notification.id.toString(),
+                        )
+                      }
+                      onValueChange={() =>
+                        handleCardSelection(notification.id.toString())
+                      }
+                    />
+                    <div className="flex flex-col gap-1 flex-1">
+                      <p
+                        className={clsx("text-small line-clamp-2", {
+                          "text-bold": notification.isRead,
+                          "font-extrabold": !notification.isRead,
+                        })}
+                      >
+                        {notification.message}
+                      </p>
+                      <p className="text-tiny text-default-400">
+                        {notificationTypeValues[notification.type]}
+                      </p>
+                    </div>
+                    {renderActions(notification)}
+                  </div>
+                </CardHeader>
+                <Divider />
+                <CardBody>
+                  <div className="flex justify-between text-small">
+                    <span className="text-default-500 font-semibold">
+                      {tCommon("createdAt")}:
+                    </span>
+                    <span
+                      className={
+                        notification.isRead ? "text-bold" : "font-extrabold"
+                      }
+                    >
+                      {utcToLocal(notification.createdAt)}
+                    </span>
+                  </div>
+                </CardBody>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {bottomContent}
+
       <DeleteConfirmationModal
         isDeleting={isDeleting}
         isOpen={isOpen}
@@ -489,6 +558,6 @@ export default function NotificationsList() {
         onDeleteAction={onDelete}
         onOpenChangeAction={onOpenChange}
       />
-    </>
+    </div>
   );
 }
