@@ -66,8 +66,9 @@ const AppHeader: React.FC = () => {
 
   const toast = (color: ColorType, description: string) =>
     addToast({
-      color: color,
       description: description,
+      color: color,
+
       timeout: 3000,
       shouldShowTimeoutProgress: true,
     });
@@ -161,7 +162,7 @@ const AppHeader: React.FC = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 flex w-full bg-white border-gray-200 z-40 dark:border-[#3f3f46] dark:bg-[#18181b] lg:border-b lg:rounded-b-xl">
+    <header className="sticky top-0 flex w-full bg-white border-gray-200 z-45 dark:border-[#3f3f46] dark:bg-[#18181b] lg:border-b lg:rounded-b-xl">
       <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
         <div className="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
           <Button
@@ -206,61 +207,63 @@ const AppHeader: React.FC = () => {
           } items-center justify-between w-full gap-4 px-5 py-4 shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
         >
           <LocaleSwitcher />
-          <ThemeSwitch />
-          <Dropdown placement="bottom-end">
-            <Badge
-              color={statusValue}
-              content=""
-              placement="bottom-left"
-              shape="circle"
-            >
-              <BadgedElement>
-                <DropdownTrigger>
-                  <Avatar
-                    isBordered
-                    as="button"
-                    className="transition-transform"
-                    color="default"
-                    name="User"
-                    size="sm"
-                    src={
-                      authData?.avatar
-                        ? `${API_URL}/uploads/${authData?.avatar}`
-                        : defaultAvatar.src
-                    }
-                  />
-                </DropdownTrigger>
-              </BadgedElement>
-            </Badge>
-            <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="profile" className="h-14 gap-2">
-                <p className="font-semibold"> {t("menu.signedInAs")}</p>
-                <p className="font-semibold">{authData?.email}</p>
-              </DropdownItem>
-              <DropdownItem key="settings" endContent={<IconUser />}>
-                {t("menu.profile")}
-              </DropdownItem>
-              <DropdownItem
-                key="notifications"
-                endContent={
-                  <BadgedElement>
-                    <IconBellRinging />
-                  </BadgedElement>
-                }
-                onPress={() => router.push("/admin/notifications")}
+          <div className="flex justify-between gap-4">
+            <ThemeSwitch />
+            <Dropdown placement="bottom-end">
+              <Badge
+                color={statusValue}
+                content=""
+                placement="bottom-left"
+                shape="circle"
               >
-                {t("menu.notifications")}
-              </DropdownItem>
-              <DropdownItem
-                key="signout"
-                color="danger"
-                endContent={<IconLogout />}
-                onPress={handleSignOut}
-              >
-                {t("menu.signOut")}
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+                <BadgedElement>
+                  <DropdownTrigger>
+                    <Avatar
+                      isBordered
+                      as="button"
+                      className="transition-transform"
+                      color="default"
+                      name="User"
+                      size="sm"
+                      src={
+                        authData?.avatar
+                          ? `${API_URL}/uploads/${authData?.avatar}`
+                          : defaultAvatar.src
+                      }
+                    />
+                  </DropdownTrigger>
+                </BadgedElement>
+              </Badge>
+              <DropdownMenu aria-label="Profile Actions" variant="flat">
+                <DropdownItem key="profile" className="h-14 gap-2">
+                  <p className="font-semibold"> {t("menu.signedInAs")}</p>
+                  <p className="font-semibold">{authData?.email}</p>
+                </DropdownItem>
+                <DropdownItem key="settings" endContent={<IconUser />}>
+                  {t("menu.profile")}
+                </DropdownItem>
+                <DropdownItem
+                  key="notifications"
+                  endContent={
+                    <BadgedElement>
+                      <IconBellRinging />
+                    </BadgedElement>
+                  }
+                  onPress={() => router.push("/admin/notifications")}
+                >
+                  {t("menu.notifications")}
+                </DropdownItem>
+                <DropdownItem
+                  key="signout"
+                  color="danger"
+                  endContent={<IconLogout />}
+                  onPress={handleSignOut}
+                >
+                  {t("menu.signOut")}
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </div>
       </div>
     </header>

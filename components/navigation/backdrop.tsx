@@ -11,7 +11,7 @@ const Backdrop: React.FC = () => {
   return (
     <div
       aria-label="Close sidebar"
-      className="fixed inset-0 z-40 bg-gray-900/50 lg:hidden transition-opacity duration-300"
+      className="fixed inset-0 z-20 bg-gray-900/50 lg:hidden transition-opacity duration-300"
       role="button"
       onClick={toggleMobileSidebar}
     />

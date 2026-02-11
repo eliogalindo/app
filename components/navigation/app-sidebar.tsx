@@ -229,7 +229,7 @@ const AppSidebar: React.FC = () => {
                   bg-white dark:bg-[#18181b] dark:text-white
                   border-r border-gray-200 dark:border-[#3f3f46]
                   overflow-y-auto overflow-x-hidden
-                  z-50
+                  z-30
                   ${isExpanded || isMobileOpen ? "w-[250px]" : isHovered ? "w-[250px]" : "w-[90px]"}
                   ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
                   lg:translate-x-0`}

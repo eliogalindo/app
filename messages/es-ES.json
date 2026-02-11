@@ -29,6 +29,7 @@
     "columns": "Columnas",
     "previous": "Anterior",
     "next": "Siguiente",
+    "noDescription": "No se ha provisto una descripción",
     "deleteConfirmationTitle": "Confirmación de eliminación",
     "deleteConfirmationMessage": "¿Estás seguro de que deseas eliminar los elementos seleccionados? Esta acción no se puede deshacer.",
     "details": "Detalles",
@@ -252,6 +253,7 @@
     "permissions": "Permisos",
     "permissionsPlaceholder": "Selecciona los permisos del rol",
     "enabled": "Habilitado",
+    "disabled": "Deshabilitado",
     "createdAt": "Creado el",
     "actions": "Acciones",
     "actionDescriptions": {
