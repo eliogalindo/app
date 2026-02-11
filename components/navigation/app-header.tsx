@@ -66,8 +66,9 @@ const AppHeader: React.FC = () => {
 
   const toast = (color: ColorType, description: string) =>
     addToast({
-      color: color,
       description: description,
+      color: color,
+
       timeout: 3000,
       shouldShowTimeoutProgress: true,
     });
