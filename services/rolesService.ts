@@ -1,16 +1,17 @@
 import { API_URL } from "@/constants";
 import { IRoleFormData } from "@/interfaces/role";
-import { ISearchParams } from "@/interfaces/searchParams";
+import { IRolesSearchParams, ISearchParams } from "@/interfaces/searchParams";
 
 class RolesService {
   public async findAll(
-    searchParams: ISearchParams,
+    searchParams: IRolesSearchParams,
     locale: string = "en-US",
   ): Promise<Response | undefined> {
     try {
-      const { pageSize, pageNumber, orderBy, desc, filter } = searchParams;
+      const { pageSize, pageNumber, orderBy, desc, filter, enabledOnly } =
+        searchParams;
 
-      const query = `${API_URL}/api/v1/roles?pageSize=${pageSize}&pageNumber=${pageNumber}&orderBy=${orderBy}&desc=${desc}&filter=${filter}`;
+      const query = `${API_URL}/api/v1/roles?pageSize=${pageSize}&pageNumber=${pageNumber}&orderBy=${orderBy}&desc=${desc}&filter=${filter}&enabledOnly=${enabledOnly}`;
 
       return await fetch(query, {
         headers: {

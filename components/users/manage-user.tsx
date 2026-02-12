@@ -119,6 +119,7 @@ export default function ManageUser() {
         orderBy: sortDescriptor.column.toString(),
         desc: sortDescriptor.direction === "descending",
         filter: debouncedFilter, // use debounced value here
+        enabledOnly: true,
         allSelected: selectedKeys === "all",
       });
 
