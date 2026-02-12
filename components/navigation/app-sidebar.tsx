@@ -1,5 +1,11 @@
 "use client";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -15,13 +21,13 @@ import {
 import { usePathname } from "@/i18n/navigation";
 import { useSidebarStore } from "@/stores/sidebarStore";
 import { useTranslations } from "next-intl";
+import { useAuthStore } from "@/stores/authStore";
 
 type SubItem = {
   name: string;
   path: string;
   icon?: React.ReactNode;
-  pro?: boolean;
-  new?: boolean;
+  permissions?: string[]; // Required permissions for this sub-item (optional, can be public if not provided)
 };
 
 type NavItem = {
@@ -29,42 +35,106 @@ type NavItem = {
   icon: React.ReactNode;
   path?: string;
   subItems?: SubItem[];
+  permissions?: string[];
 };
 
 const AppSidebar: React.FC = () => {
+  // 1. Stores
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } =
     useSidebarStore();
+  const { authData } = useAuthStore(); // Gets the user from the persisted store
+
   const pathname = usePathname();
   const t = useTranslations("Navigation");
 
-  const navItems: NavItem[] = [
-    {
-      icon: <IconChartPie />,
-      name: t("links.dashboard"),
-      path: "/admin",
+  // 2. Helper function to check permissions
+  const hasPermission = useCallback(
+    (requiredPermissions?: string[]) => {
+      // If it doesn't require permissions, it's public
+      if (!requiredPermissions || requiredPermissions.length === 0) return true;
+
+      // Deny access if there's no user data (not logged in)
+      if (!authData) return false;
+
+      if (!authData.permissions || !Array.isArray(authData.permissions))
+        return false;
+
+      // Returns true if the user has AT LEAST ONE of the required permissions
+      return requiredPermissions.some((permission) =>
+        authData.permissions.includes(permission),
+      );
     },
-    {
-      icon: <IconDeviceDesktopCog />,
-      name: t("links.management.main"),
-      subItems: [
-        {
-          name: t("links.management.users"),
-          path: "/admin/users",
-          icon: <IconUsersGroup />,
-        },
-        {
-          name: t("links.management.roles"),
-          path: "/admin/roles",
-          icon: <IconKey />,
-        },
-        {
-          name: t("links.management.traces"),
-          path: "/admin/traces",
-          icon: <IconZoomExclamation />,
-        },
-      ],
-    },
-  ];
+    [authData],
+  );
+
+  // 3. Menu (Memoized)
+  const navItemsRaw: NavItem[] = useMemo(
+    () => [
+      {
+        icon: <IconChartPie />,
+        name: t("links.dashboard"),
+        path: "/admin",
+      },
+      {
+        icon: <IconDeviceDesktopCog />,
+        name: t("links.management.main"),
+        // This father NavItem doesn't have permissions, but it will disappear if its children are filtered
+        subItems: [
+          {
+            name: t("links.management.users"),
+            path: "/admin/users",
+            icon: <IconUsersGroup />,
+            permissions: ["users.read"],
+          },
+          {
+            name: t("links.management.roles"),
+            path: "/admin/roles",
+            icon: <IconKey />,
+            permissions: ["roles.read"],
+          },
+          {
+            name: t("links.management.traces"),
+            path: "/admin/traces",
+            icon: <IconZoomExclamation />,
+            permissions: ["traces.read"],
+          },
+        ],
+      },
+    ],
+    [t],
+  );
+
+  // 4. Recursive filtering logic based on permissions
+  const filteredNavItems = useMemo(() => {
+    // If there's no authData, we could return [] or only public routes.
+    // The actual logic allows routes without defined 'permissions' even if there's no user.
+
+    return navItemsRaw.filter((item) => {
+      // A. Verify permissions for the parent item
+      if (item.permissions && !hasPermission(item.permissions)) {
+        return false;
+      }
+
+      // B. Verify children if they exist
+      if (item.subItems) {
+        const visibleSubItems = item.subItems.filter(
+          (subItem) =>
+            !subItem.permissions || hasPermission(subItem.permissions),
+        );
+
+        // After filtering, if there are no visible children, we hide the parent
+        if (visibleSubItems.length === 0) {
+          return false;
+        }
+
+        // Asign the filtered subItems to a new object to avoid mutating the original navItemsRaw
+        item.subItems = visibleSubItems;
+      }
+
+      return true;
+    });
+  }, [navItemsRaw, hasPermission]); // Recalculate when authData changes (inside hasPermission)
+
   const [openSubmenu, setOpenSubmenu] = useState<number | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
     {},
@@ -79,7 +149,8 @@ const AppSidebar: React.FC = () => {
 
   useEffect(() => {
     let matchedIndex: number | null = null;
-    navItems.forEach((nav, index) => {
+    //Uses the filtered list to calculate the active menu
+    filteredNavItems.forEach((nav, index) => {
       nav.subItems?.forEach((subItem) => {
         if (isActive(subItem.path)) {
           matchedIndex = index;
@@ -87,7 +158,7 @@ const AppSidebar: React.FC = () => {
       });
     });
     setOpenSubmenu(matchedIndex);
-  }, [pathname, isActive]);
+  }, [pathname, isActive, filteredNavItems]);
 
   useEffect(() => {
     if (openSubmenu !== null) {
@@ -105,7 +176,7 @@ const AppSidebar: React.FC = () => {
     setOpenSubmenu((prev) => (prev === index ? null : index));
   };
 
-  const renderMenuItems = (items: typeof navItems) => (
+  const renderMenuItems = (items: NavItem[]) => (
     <ul className="flex flex-col gap-2">
       {items.map((nav, index) => (
         <li key={nav.name}>
@@ -236,7 +307,6 @@ const AppSidebar: React.FC = () => {
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Logo */}
       <div className="flex py-6 justify-start px-5">
         <Link href="/">
           {isExpanded || isHovered || isMobileOpen ? (
@@ -247,13 +317,13 @@ const AppSidebar: React.FC = () => {
         </Link>
       </div>
 
-      {/* Menu */}
       <div className="flex flex-col overflow-y-auto no-scrollbar px-5">
         <nav className="mb-6">
           <h2 className="mb-4 pl-1 text-xs uppercase leading-5 text-gray-400 flex items-center">
             {isExpanded || isHovered || isMobileOpen ? "Menu" : <IconDots />}
           </h2>
-          {renderMenuItems(navItems)}
+          {/* Renders the filtered menu items */}
+          {renderMenuItems(filteredNavItems)}
         </nav>
       </div>
     </aside>
