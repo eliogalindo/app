@@ -121,8 +121,8 @@ const AppSidebar: React.FC = () => {
               <span
                 className={
                   openSubmenu === index
-                    ? "menu-item-icon-active flex-shrink-0"
-                    : "menu-item-icon-inactive flex-shrink-0"
+                    ? "menu-item-icon-active shrink-0"
+                    : "menu-item-icon-inactive shrink-0"
                 }
               >
                 {nav.icon}
@@ -155,8 +155,8 @@ const AppSidebar: React.FC = () => {
                 <span
                   className={
                     isActive(nav.path, true)
-                      ? "menu-item-icon-active flex-shrink-0"
-                      : "menu-item-icon-inactive flex-shrink-0"
+                      ? "menu-item-icon-active shrink-0"
+                      : "menu-item-icon-inactive shrink-0"
                   }
                 >
                   {nav.icon}
@@ -201,7 +201,7 @@ const AppSidebar: React.FC = () => {
                       href={subItem.path}
                     >
                       {subItem.icon && (
-                        <span className="flex-shrink-0">{subItem.icon}</span>
+                        <span className="shrink-0">{subItem.icon}</span>
                       )}
                       <span
                         className={`truncate whitespace-nowrap transition-opacity duration-200 delay-300 ${
@@ -230,7 +230,7 @@ const AppSidebar: React.FC = () => {
                   border-r border-gray-200 dark:border-[#3f3f46]
                   overflow-y-auto overflow-x-hidden
                   z-30
-                  ${isExpanded || isMobileOpen ? "w-[250px]" : isHovered ? "w-[250px]" : "w-[90px]"}
+                  ${isExpanded || isMobileOpen ? "w-62.5" : isHovered ? "w-62.5" : "w-22.5"}
                   ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
                   lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
@@ -250,7 +250,7 @@ const AppSidebar: React.FC = () => {
       {/* Menu */}
       <div className="flex flex-col overflow-y-auto no-scrollbar px-5">
         <nav className="mb-6">
-          <h2 className="mb-4 pl-1 text-xs uppercase leading-[20px] text-gray-400 flex items-center">
+          <h2 className="mb-4 pl-1 text-xs uppercase leading-5 text-gray-400 flex items-center">
             {isExpanded || isHovered || isMobileOpen ? "Menu" : <IconDots />}
           </h2>
           {renderMenuItems(navItems)}
