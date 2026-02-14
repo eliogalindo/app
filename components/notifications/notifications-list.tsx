@@ -486,6 +486,23 @@ export default function NotificationsList() {
           </div>
         ) : (
           <div className="flex flex-col gap-4">
+            {/* HEADER: SELECT ALL */}
+            <div className="flex justify-between items-center px-2">
+              <Checkbox
+                isSelected={
+                  selectedKeys === "all" ||
+                  (selectedKeys.size === notifications.length &&
+                    notifications.length > 0)
+                }
+                onValueChange={(isSelected) =>
+                  setSelectedKeys(isSelected ? "all" : new Set())
+                }
+              >
+                <span className="text-small text-default-500">
+                  {tCommon("selectAll")}
+                </span>
+              </Checkbox>
+            </div>
             {notifications.map((notification) => (
               <Card
                 key={notification.id}

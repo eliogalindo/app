@@ -12,3 +12,7 @@ export interface INotificationsSearchParams extends ISearchParams {
   NotificationType?: NotificationType;
   includeRead: boolean;
 }
+
+export interface IRolesSearchParams extends ISearchParams {
+  enabledOnly?: boolean;
+}

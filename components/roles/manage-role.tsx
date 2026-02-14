@@ -534,6 +534,29 @@ export default function ManageRole() {
               </div>
             ) : (
               <div className="flex flex-col gap-4">
+                {/* HEADER: SELECT ALL */}
+                <div className="flex justify-between items-center px-2">
+                  <Checkbox
+                    isSelected={
+                      selectedKeys === "all" ||
+                      (selectedKeys.size === permissions.length &&
+                        permissions.length > 0)
+                    }
+                    onValueChange={(isSelected) =>
+                      setSelectedKeys(isSelected ? "all" : new Set())
+                    }
+                  >
+                    <span className="text-small text-default-500">
+                      {tCommon("selectAll")}
+                    </span>
+                  </Checkbox>
+                  <span className="text-tiny text-default-400">
+                    {selectedKeys === "all"
+                      ? totalPermissions
+                      : selectedKeys.size}{" "}
+                    {tCommon("selected")}
+                  </span>
+                </div>
                 {permissions.map((permission) => {
                   const isSelected =
                     selectedKeys === "all" ||
