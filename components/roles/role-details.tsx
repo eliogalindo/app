@@ -278,19 +278,15 @@ export default function RoleDetails() {
                     key={permission.id}
                     className="w-full transition-all border-2 border-transparent"
                   >
-                    <CardHeader className="justify-between items-start gap-3">
-                      <div className="flex gap-3 items-center">
-                        <div className="flex flex-col">
-                          <p className="text-medium font-bold">
-                            {getTranslation(permission)?.denomination}
-                          </p>
-                        </div>
-                      </div>
+                    <CardHeader>
+                      <p className="text-medium font-bold">
+                        {getTranslation(permission)?.denomination}
+                      </p>
                     </CardHeader>
                     <Divider />
                     <CardBody>
-                      <div className="flex flex-col gap-2 text-small">
-                        <div className="flex flex-col gap-1 mb-2">
+                      <div className="flex flex-col text-small">
+                        <div className="flex justify-between gap-2">
                           <span className="text-default-500 font-semibold">
                             {t("description")}:
                           </span>

@@ -575,30 +575,30 @@ export default function UsersList() {
                   }`}
                   onPress={() => handleCardSelection(user.id.toString())}
                 >
-                  <CardHeader className="justify-between items-start gap-3">
-                    <div className="flex gap-3 items-center">
-                      {/* Visual Checkbox, without pointer to avoid blocking the click on the card */}
-                      <div className="pointer-events-none">
-                        <Checkbox isSelected={isSelected} />
+                  <CardHeader className="flex flex-col">
+                    <div className="flex w-full justify-between">
+                      <div className="flex items-center justify-between">
+                        <div className="pointer-events-none">
+                          <Checkbox isSelected={isSelected} />
+                        </div>
+                        <User
+                          avatarProps={{
+                            size: "sm",
+                            radius: "full",
+                            src: user?.avatar
+                              ? `${API_URL}/uploads/${user?.avatar}`
+                              : defaultAvatar.src,
+                          }}
+                          description={user.email}
+                          name={user.fullName}
+                        />
                       </div>
-
-                      <User
-                        avatarProps={{
-                          radius: "full",
-                          src: user?.avatar
-                            ? `${API_URL}/uploads/${user?.avatar}`
-                            : defaultAvatar.src,
-                        }}
-                        description={user.email}
-                        name={user.fullName}
-                      />
-                    </div>
-
-                    <div className="flex flex-col items-end gap-1">
-                      {/* stopPropagation avoids selecting the card when opening the menu */}
                       <div onPointerDown={(e) => e.stopPropagation()}>
                         {renderActions(user)}
                       </div>
+                    </div>
+
+                    <div className="flex w-full justify-end">
                       <Chip
                         color={statusColorMap[user.status]}
                         size="sm"
@@ -611,22 +611,30 @@ export default function UsersList() {
                   </CardHeader>
                   <Divider />
                   <CardBody>
-                    <div className="flex flex-col gap-2 text-small">
-                      <div className="flex justify-between">
-                        <span className="text-default-500">
+                    <div className="flex flex-col text-small">
+                      <div className="flex justify-between gap-2">
+                        <span className="text-default-500 font-semibold">
                           {t("username")}:
                         </span>
-                        <span>{user.username}</span>
+                        <span className="text-default-600">
+                          {user.username}
+                        </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-default-500">{t("phone")}:</span>
-                        <span>{user.phone || "-"}</span>
+                      <div className="flex justify-between gap-2">
+                        <span className="text-default-500 font-semibold">
+                          {t("phone")}:
+                        </span>
+                        <span className="text-default-600">
+                          {user.phone || "-"}
+                        </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-default-500">
+                      <div className="flex justify-between gap-2">
+                        <span className="text-default-500 font-semibold">
                           {tCommon("createdAt")}:
                         </span>
-                        <span>{utcToLocal(user.createdAt)}</span>
+                        <span className="text-default-600">
+                          {utcToLocal(user.createdAt)}
+                        </span>
                       </div>
                     </div>
                   </CardBody>
