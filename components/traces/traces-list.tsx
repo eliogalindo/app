@@ -256,7 +256,7 @@ export default function TracesList() {
       {topContent}
 
       {/* --- DESKTOP VIEW (TABLE) --- */}
-      <div className="hidden md:block">
+      <div className="hidden xl:block">
         <Table
           isHeaderSticky
           aria-label="Traces List Table"
@@ -295,7 +295,7 @@ export default function TracesList() {
       </div>
 
       {/* --- MOBILE VIEW (CARDS) --- */}
-      <div className="block md:hidden">
+      <div className="block xl:hidden">
         {isLoading ? (
           <div className="flex justify-center p-10">
             <Spinner size="lg" />
@@ -311,38 +311,40 @@ export default function TracesList() {
                 key={trace.id}
                 className="w-full border-2 border-transparent transition-all"
               >
-                <CardHeader className="justify-between items-start gap-3">
-                  <div className="flex flex-col gap-1">
-                    <p className="text-small font-bold line-clamp-2">
+                <CardHeader>
+                  <div className="flex w-full justify-between items-center text-small">
+                    <p className="font-bold line-clamp-2">
                       {trace.description}
                     </p>
-                  </div>
-                  <div className="flex flex-col items-end gap-1">
-                    {renderActions(trace)}
+                    <div onPointerDown={(e) => e.stopPropagation()}>
+                      {renderActions(trace)}
+                    </div>
                   </div>
                 </CardHeader>
                 <Divider />
                 <CardBody>
-                  <div className="flex flex-col gap-2 text-small">
-                    <div className="flex justify-between">
+                  <div className="flex flex-col text-small">
+                    <div className="flex justify-between gap-2">
                       <span className="text-default-500 font-semibold">
                         {t("ip")}:
                       </span>
-                      <span className="font-semibold">{trace.ip}</span>
+                      <span className="text-default-600">{trace.ip}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-2">
                       <span className="text-default-500 font-semibold">
                         {t("action")}:
                       </span>
-                      <span className="font-semibold">
+                      <span className="text-default-600">
                         {traceActions[trace.action]}
                       </span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-2">
                       <span className="text-default-500 font-semibold">
                         {tCommon("createdAt")}:
                       </span>
-                      <span>{utcToLocal(trace.createdAt)}</span>
+                      <span className="text-default-600">
+                        {utcToLocal(trace.createdAt)}
+                      </span>
                     </div>
                   </div>
                 </CardBody>

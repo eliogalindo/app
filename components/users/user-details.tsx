@@ -141,7 +141,7 @@ export default function UserDetails() {
   }, [roles.length]);
   const LoadingSkeleton = () => {
     return (
-      <div className="w-full flex flex-row items-start gap-4">
+      <div className="w-full flex flex-col md:flex-row items-start gap-4">
         <div className="w-full max-w-75 flex flex-col items-start gap-6">
           <div className="w-full flex flex-col gap-2">
             <Skeleton className="h-28 w-28 rounded-full" />
@@ -303,8 +303,8 @@ export default function UserDetails() {
                     </CardHeader>
                     <Divider />
                     <CardBody>
-                      <div className="flex flex-col gap-2 text-small">
-                        <div className="flex flex-col gap-1 mb-2">
+                      <div className="flex flex-col text-small w-full">
+                        <div className="flex justify-between gap-2">
                           <span className="text-default-500 font-semibold">
                             {tRoles("description")}:
                           </span>

@@ -575,8 +575,8 @@ export default function RolesList() {
                   </CardHeader>
                   <Divider />
                   <CardBody>
-                    <div className="flex flex-col gap-2 text-small">
-                      <div className="flex flex-col gap-1 mb-2">
+                    <div className="flex flex-col text-small">
+                      <div className="flex justify-between gap-2">
                         <span className="text-default-500 font-semibold">
                           {t("description")}:
                         </span>
@@ -584,11 +584,13 @@ export default function RolesList() {
                           {role.description || tCommon("noDescription")}
                         </span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between gap-2">
                         <span className="text-default-500 font-semibold">
                           {tCommon("createdAt")}:
                         </span>
-                        <span>{utcToLocal(role.createdAt)}</span>
+                        <span className="text-default-600">
+                          {utcToLocal(role.createdAt)}
+                        </span>
                       </div>
                     </div>
                   </CardBody>

@@ -593,7 +593,6 @@ export default function UsersList() {
                           name={user.fullName}
                         />
                       </div>
-                      {/* stopPropagation avoids selecting the card when opening the menu */}
                       <div onPointerDown={(e) => e.stopPropagation()}>
                         {renderActions(user)}
                       </div>
@@ -612,22 +611,30 @@ export default function UsersList() {
                   </CardHeader>
                   <Divider />
                   <CardBody>
-                    <div className="flex flex-col gap-2 text-small">
-                      <div className="flex justify-between">
-                        <span className="text-default-500">
+                    <div className="flex flex-col text-small">
+                      <div className="flex justify-between gap-2">
+                        <span className="text-default-500 font-semibold">
                           {t("username")}:
                         </span>
-                        <span>{user.username}</span>
+                        <span className="text-default-600">
+                          {user.username}
+                        </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-default-500">{t("phone")}:</span>
-                        <span>{user.phone || "-"}</span>
+                      <div className="flex justify-between gap-2">
+                        <span className="text-default-500 font-semibold">
+                          {t("phone")}:
+                        </span>
+                        <span className="text-default-600">
+                          {user.phone || "-"}
+                        </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-default-500">
+                      <div className="flex justify-between gap-2">
+                        <span className="text-default-500 font-semibold">
                           {tCommon("createdAt")}:
                         </span>
-                        <span>{utcToLocal(user.createdAt)}</span>
+                        <span className="text-default-600">
+                          {utcToLocal(user.createdAt)}
+                        </span>
                       </div>
                     </div>
                   </CardBody>
