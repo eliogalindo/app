@@ -547,22 +547,22 @@ export default function RolesList() {
                   }`}
                   onPress={() => handleCardSelection(role.id.toString())}
                 >
-                  <CardHeader className="justify-between items-start gap-3">
-                    <div className="flex gap-3 items-center">
-                      <div className="pointer-events-none">
-                        <Checkbox isSelected={isSelected} />
-                      </div>
-                      <div className="flex flex-col">
+                  <CardHeader className="flex flex-col">
+                    <div className="flex w-full justify-between">
+                      <div className="flex items-center justify-between">
+                        <div className="pointer-events-none">
+                          <Checkbox isSelected={isSelected} />
+                        </div>
                         <p className="text-medium font-bold">
                           {role.denomination}
                         </p>
                       </div>
-                    </div>
-
-                    <div className="flex flex-col items-end gap-1">
                       <div onPointerDown={(e) => e.stopPropagation()}>
                         {renderActions(role)}
                       </div>
+                    </div>
+
+                    <div className="flex w-full justify-end">
                       <Chip
                         color={role.enabled ? "success" : "danger"}
                         size="sm"

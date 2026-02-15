@@ -575,16 +575,14 @@ export default function ManageRole() {
                         handleCardSelection(permission.id.toString())
                       }
                     >
-                      <CardHeader className="justify-between items-start gap-3">
-                        <div className="flex gap-3 items-center">
+                      <CardHeader>
+                        <div className="flex justify-between items-center">
                           <div className="pointer-events-none">
                             <Checkbox isSelected={isSelected} />
                           </div>
-                          <div className="flex flex-col">
-                            <p className="text-medium font-bold">
-                              {getTranslation(permission)?.denomination}
-                            </p>
-                          </div>
+                          <p className="text-medium font-bold">
+                            {getTranslation(permission)?.denomination}
+                          </p>
                         </div>
                       </CardHeader>
                       <Divider />
