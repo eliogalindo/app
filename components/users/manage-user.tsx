@@ -698,16 +698,14 @@ export default function ManageUser() {
                       }`}
                       onPress={() => handleCardSelection(role.id.toString())}
                     >
-                      <CardHeader className="justify-between items-start gap-3">
-                        <div className="flex gap-3 justify-between items-center">
+                      <CardHeader>
+                        <div className="flex justify-between items-center">
                           <div className="pointer-events-none">
                             <Checkbox isSelected={isSelected} />
                           </div>
-                          <div className="flex flex-col">
-                            <p className="text-small font-bold">
-                              {role.denomination}
-                            </p>
-                          </div>
+                          <p className="text-small font-bold">
+                            {role.denomination}
+                          </p>
                         </div>
                       </CardHeader>
                       <Divider />

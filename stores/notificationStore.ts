@@ -71,7 +71,7 @@ export const useNotificationStore = create<INotificationState>()(
           connectionStatus: ConnectionStatus.disconnected,
         });
         if (error instanceof Error) {
-          throw new Error(`${error} ${LogLevel.Error}`);
+          console.warn(`${error} ${LogLevel.Error}`);
         }
       }
     },

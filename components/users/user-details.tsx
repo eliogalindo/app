@@ -296,7 +296,7 @@ export default function UserDetails() {
                     isPressable
                     className="w-full transition-all border-2 border-transparent"
                   >
-                    <CardHeader className="justify-between items-start gap-3">
+                    <CardHeader>
                       <p className="text-small font-bold">
                         {role.denomination}
                       </p>
