@@ -312,45 +312,33 @@ export default function NotificationsList() {
   const topContent = useMemo(
     () => (
       <div className="flex flex-col gap-4 mb-4">
-        <div className="flex flex-col sm:flex-row justify-between gap-3 items-end">
-          <Input
-            isClearable
-            className="w-full sm:max-w-[44%]"
-            //placeholder={tCommon("search")}
-            placeholder="Search"
-            startContent={<IconListSearch stroke={1} />}
-            value={filterValue}
-            onClear={() => setFilterValue("")}
-            onValueChange={setFilterValue}
-          />
-          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto items-center">
-            <Switch
-              isSelected={includeRead}
-              onChange={() => setIncludeRead(!includeRead)}
+        <div className="flex flex-col items-center gap-3 w-full sm:flex-row sm:items-center sm:justify-end">
+          <Switch
+            isSelected={includeRead}
+            onChange={() => setIncludeRead(!includeRead)}
+            className="w-full sm:w-auto"
+          >
+            {t("includeRead")}
+          </Switch>
+          {notificationsSelected.length > 0 && (
+            <Button
+              color="danger"
+              endContent={<IconTrash size="20" />}
+              variant="flat"
+              onPress={onOpen}
+              className="w-full sm:w-auto"
             >
-              {t("includeRead")}
-            </Switch>
-            <div className="flex gap-2 w-full sm:w-auto">
-              {notificationsSelected.length > 0 && (
-                <Button
-                  color="danger"
-                  variant="flat"
-                  onPress={onOpen}
-                  className="flex-1"
-                >
-                  {tCommon("delete")} ({notificationsSelected.length})
-                </Button>
-              )}
-              <Button
-                color="primary"
-                endContent={<IconCopyCheck size="20" />}
-                onPress={onMarkAllAsRead}
-                className="flex-1"
-              >
-                {t("markAllAsRead")}
-              </Button>
-            </div>
-          </div>
+              {tCommon("delete")} ({notificationsSelected.length})
+            </Button>
+          )}
+          <Button
+            color="primary"
+            endContent={<IconCopyCheck size="20" />}
+            onPress={onMarkAllAsRead}
+            className="w-full sm:w-auto"
+          >
+            {t("markAllAsRead")}
+          </Button>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
@@ -503,65 +491,62 @@ export default function NotificationsList() {
                 </span>
               </Checkbox>
             </div>
-            {notifications.map((notification) => (
-              <Card
-                key={notification.id}
-                className={clsx(
-                  "w-full border-2 transition-all",
-                  selectedKeys !== "all" &&
-                    (selectedKeys as Set<string>).has(
-                      notification.id.toString(),
-                    )
-                    ? "border-primary"
-                    : "border-transparent",
-                )}
-              >
-                <CardHeader className="justify-between items-start gap-3">
-                  <div className="flex gap-3 items-start w-full">
-                    <Checkbox
-                      isSelected={
-                        selectedKeys === "all" ||
-                        (selectedKeys as Set<string>).has(
-                          notification.id.toString(),
-                        )
-                      }
-                      onValueChange={() =>
-                        handleCardSelection(notification.id.toString())
-                      }
-                    />
-                    <div className="flex flex-col gap-1 flex-1">
-                      <p
-                        className={clsx("text-small line-clamp-2", {
-                          "text-bold": notification.isRead,
-                          "font-extrabold": !notification.isRead,
-                        })}
-                      >
-                        {notification.message}
-                      </p>
-                      <p className="text-tiny text-default-400">
-                        {notificationTypeValues[notification.type]}
-                      </p>
+            {notifications.map((notification) => {
+              const isSelected =
+                selectedKeys === "all" ||
+                selectedKeys.has(notification.id.toString());
+              return (
+                <Card
+                  key={notification.id}
+                  isPressable
+                  className={`w-full transition-all ${
+                    isSelected
+                      ? "border-2 border-primary"
+                      : "border-2 border-transparent"
+                  }`}
+                  onPress={() =>
+                    handleCardSelection(notification.id.toString())
+                  }
+                >
+                  <CardHeader className="justify-between items-start gap-3">
+                    <div className="flex gap-3 items-start w-full">
+                      <div className="pointer-events-none">
+                        <Checkbox isSelected={isSelected} />
+                      </div>
+                      <div className="flex flex-col gap-1 flex-1">
+                        <p
+                          className={clsx("text-small line-clamp-2", {
+                            "text-bold": notification.isRead,
+                            "font-extrabold": !notification.isRead,
+                          })}
+                        >
+                          {notification.message}
+                        </p>
+                        <p className="text-tiny text-default-400">
+                          {notificationTypeValues[notification.type]}
+                        </p>
+                      </div>
+                      {renderActions(notification)}
                     </div>
-                    {renderActions(notification)}
-                  </div>
-                </CardHeader>
-                <Divider />
-                <CardBody>
-                  <div className="flex justify-between text-small">
-                    <span className="text-default-500 font-semibold">
-                      {tCommon("createdAt")}:
-                    </span>
-                    <span
-                      className={
-                        notification.isRead ? "text-bold" : "font-extrabold"
-                      }
-                    >
-                      {utcToLocal(notification.createdAt)}
-                    </span>
-                  </div>
-                </CardBody>
-              </Card>
-            ))}
+                  </CardHeader>
+                  <Divider />
+                  <CardBody>
+                    <div className="flex justify-between text-small">
+                      <span className="text-default-500 font-semibold">
+                        {tCommon("createdAt")}:
+                      </span>
+                      <span
+                        className={
+                          notification.isRead ? "text-bold" : "font-extrabold"
+                        }
+                      >
+                        {utcToLocal(notification.createdAt)}
+                      </span>
+                    </div>
+                  </CardBody>
+                </Card>
+              );
+            })}
           </div>
         )}
       </div>
