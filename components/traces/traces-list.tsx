@@ -215,7 +215,6 @@ export default function TracesList() {
     );
   }, [totalTraces, rowsPerPage, onRowsPerPageChange, t, tCommon]);
 
-  // --- Bottom Content (Pagination like Users/Roles) ---
   const bottomContent = useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center mt-4">
