@@ -96,6 +96,7 @@ export default function TracesList() {
 
       if (response?.ok) {
         const { items, count } = await response.json();
+
         setTraces(items);
         setTotalTraces(count);
       } else {
@@ -104,11 +105,13 @@ export default function TracesList() {
       }
       setIsLoading(false);
     };
+
     void fetchData();
   }, [rowsPerPage, page, sortDescriptor, locale]);
 
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
+
     return columns.filter((column) =>
       Array.from(visibleColumns).includes(column.uid),
     );
@@ -202,6 +205,7 @@ export default function TracesList() {
             {tCommon("rowsPerPage")}:
             <select
               className="bg-transparent outline-none text-default-400 text-small"
+              id="rowsPerPage"
               value={rowsPerPage}
               onChange={onRowsPerPageChange}
             >

@@ -35,7 +35,6 @@ import {
   Chip,
   Pagination,
   Spinner,
-  addToast,
 } from "@heroui/react";
 import {
   IconEdit,
@@ -51,8 +50,8 @@ import { rolesService } from "@/services/rolesService";
 import { IRole } from "@/interfaces/role";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import DeleteConfirmationModal from "@/components/modals/delete-confirmation";
-import { ColorType } from "@/types";
 import { utcToLocal } from "@/helpers/dateFormatter";
+import showToast from "@/components/ui/toast";
 
 export default function RolesList() {
   const locale = useLocale();
@@ -102,6 +101,7 @@ export default function RolesList() {
     if (selectedKeys === "all") {
       return roles.map((role) => role.id.toString());
     }
+
     return Array.from(selectedKeys) as string[];
   }, [selectedKeys, roles]);
 
@@ -115,25 +115,27 @@ export default function RolesList() {
       const response = await rolesService.delete(id);
 
       if (response?.ok) {
-        toast("success", t("messages.deleteSuccess"));
+        showToast("success", t("messages.deleteSuccess"));
         setSelectedKeys(new Set());
         setRefresh((prev) => !prev);
         onOpenChange();
       } else {
         const detail = await response?.json();
-        toast("danger", detail?.detail || t("messages.deleteError"));
+
+        showToast("danger", detail?.detail || t("messages.deleteError"));
       }
     } else {
       const response = await rolesService.deleteMany(rolesSelected);
 
       if (response?.ok) {
-        toast("success", t("messages.deleteManySuccess"));
+        showToast("success", t("messages.deleteManySuccess"));
         setSelectedKeys(new Set());
         setRefresh((prev) => !prev);
         onOpenChange();
       } else {
         const detail = await response?.json();
-        toast("danger", detail?.detail || t("messages.deleteManyError"));
+
+        showToast("danger", detail?.detail || t("messages.deleteManyError"));
       }
     }
     setIsDeleting(false);
@@ -143,6 +145,7 @@ export default function RolesList() {
     const handler = setTimeout(() => {
       setDebouncedFilter(filterValue);
     }, 400);
+
     return () => clearTimeout(handler);
   }, [filterValue]);
 
@@ -163,12 +166,13 @@ export default function RolesList() {
 
       if (response?.ok) {
         const { items, count } = await response.json();
+
         setRoles(items);
         setTotalRoles(count);
       } else {
         setRoles([]);
         setTotalRoles(0);
-        toast("danger", t("messages.fetchError"));
+        showToast("danger", t("messages.fetchError"));
       }
       setIsLoading(false);
     };
@@ -183,16 +187,9 @@ export default function RolesList() {
     refresh,
   ]);
 
-  const toast = (color: ColorType, description: string) =>
-    addToast({
-      color: color,
-      description: description,
-      timeout: 3000,
-      shouldShowTimeoutProgress: true,
-    });
-
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
+
     return columns.filter((column) =>
       Array.from(visibleColumns).includes(column.uid),
     );
@@ -205,11 +202,13 @@ export default function RolesList() {
       const currentKeys = new Set(
         prev === "all" ? roles.map((r) => r.id.toString()) : prev,
       );
+
       if (currentKeys.has(id)) {
         currentKeys.delete(id);
       } else {
         currentKeys.add(id);
       }
+
       return new Set(currentKeys);
     });
   };
@@ -218,7 +217,7 @@ export default function RolesList() {
   const renderActions = (role: IRole) => (
     <Dropdown backdrop="transparent">
       <DropdownTrigger>
-        <Button as={"div"} isIconOnly size="sm" variant="light">
+        <Button isIconOnly as={"div"} size="sm" variant="light">
           <IconDotsVertical className="text-default-300" />
         </Button>
       </DropdownTrigger>
@@ -341,11 +340,11 @@ export default function RolesList() {
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             {rolesSelected.length > 0 && (
               <Button
+                className="w-full sm:w-auto"
                 color="danger"
                 endContent={<IconTrash size="20" />}
                 variant="flat"
                 onPress={onOpen}
-                className="w-full sm:w-auto"
               >
                 {tCommon("delete")} ({rolesSelected.length})
               </Button>
@@ -375,10 +374,10 @@ export default function RolesList() {
             </Dropdown>
 
             <Button
+              className="w-full sm:w-auto"
               color="primary"
               endContent={<IconPlus />}
               onPress={() => router.push(`${pathname}/add`)}
-              className="w-full sm:w-auto"
             >
               {tCommon("addNew")}
             </Button>
@@ -564,10 +563,10 @@ export default function RolesList() {
 
                     <div className="flex w-full justify-end">
                       <Chip
+                        className="mt-1"
                         color={role.enabled ? "success" : "danger"}
                         size="sm"
                         variant="flat"
-                        className="mt-1"
                       >
                         {role.enabled ? t("enabled") : t("disabled")}
                       </Chip>

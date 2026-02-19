@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useFormik } from "formik";
 import {
   Form,
@@ -10,7 +10,6 @@ import {
   CardBody,
   CardFooter,
   Divider,
-  addToast,
   Button,
   Avatar,
 } from "@heroui/react";
@@ -25,6 +24,8 @@ import { Link } from "@/i18n/navigation";
 import { useVerificationStorage } from "@/stores/verificationStore";
 import { VerificationCodeType } from "@/enums/verificationCodeType";
 import { UserStatus } from "@/enums/userStatus";
+import showToast from "@/components/ui/toast";
+
 export default function SignUpForm() {
   const locale = useLocale();
   const router = useRouter();
@@ -36,13 +37,8 @@ export default function SignUpForm() {
   const onSubmit = async (data: ISignUpFormData) => {
     const response = await authService.signUp(data, locale);
 
-    if (response?.status === 200) {
-      addToast({
-        color: "success",
-        title: t("messages.signUpSuccess"),
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-      });
+    if (response?.ok) {
+      showToast("success", t("messages.signUpSuccess"));
       setData({
         email: data.email,
         codeType: VerificationCodeType.EmailVerification,
@@ -52,12 +48,7 @@ export default function SignUpForm() {
     } else {
       const { detail } = await response?.json();
 
-      addToast({
-        color: "danger",
-        title: detail,
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-      });
+      showToast("danger", detail);
     }
   };
 
@@ -97,6 +88,7 @@ export default function SignUpForm() {
               <div className="flex flex-col w-full sm:flex-col gap-3">
                 <Input
                   isRequired
+                  autoComplete="on"
                   errorMessage={errors.fullName}
                   id="fullName"
                   isInvalid={!!errors.fullName && touched.fullName}
@@ -111,6 +103,7 @@ export default function SignUpForm() {
                 />
                 <Input
                   isRequired
+                  autoComplete="on"
                   errorMessage={errors.username}
                   id="username"
                   isInvalid={!!errors.username && touched.username}
@@ -127,6 +120,7 @@ export default function SignUpForm() {
               <div className="flex flex-col w-full sm:flex-col gap-3">
                 <Input
                   isRequired
+                  autoComplete="on"
                   errorMessage={errors.email}
                   id="email"
                   isInvalid={!!errors.email && touched.email}
@@ -141,6 +135,7 @@ export default function SignUpForm() {
                 />
                 <Input
                   isRequired
+                  autoComplete="on"
                   errorMessage={errors.phone}
                   id="phone"
                   isInvalid={!!errors.phone && touched.phone}
@@ -158,6 +153,7 @@ export default function SignUpForm() {
             <div className="flex flex-col w-full sm:flex-col gap-3">
               <Input
                 isRequired
+                autoComplete="on"
                 endContent={
                   <button
                     aria-label="toggle password visibility"
@@ -173,6 +169,7 @@ export default function SignUpForm() {
                   </button>
                 }
                 errorMessage={errors.password}
+                id="password"
                 isInvalid={!!errors.password && touched.password}
                 label={t("password")}
                 labelPlacement="outside"
@@ -185,6 +182,7 @@ export default function SignUpForm() {
               />
               <Input
                 isRequired
+                autoComplete="on"
                 endContent={
                   <button
                     aria-label="toggle password confirmation visibility"
@@ -200,6 +198,7 @@ export default function SignUpForm() {
                   </button>
                 }
                 errorMessage={errors.passwordConfirmation}
+                id="passwordConfirmation"
                 isInvalid={
                   !!errors.passwordConfirmation && touched.passwordConfirmation
                 }

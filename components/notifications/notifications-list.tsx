@@ -11,7 +11,7 @@ import {
   Checkbox,
 } from "@heroui/react";
 import { useTranslations, useLocale } from "next-intl";
-import React, {
+import {
   ChangeEvent,
   Key,
   useCallback,
@@ -26,7 +26,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Input,
   Button,
   DropdownTrigger,
   Dropdown,
@@ -34,7 +33,6 @@ import {
   DropdownItem,
   Pagination,
   Spinner,
-  addToast,
   useDisclosure,
 } from "@heroui/react";
 import {
@@ -43,18 +41,17 @@ import {
   IconDotsVertical,
   IconSquareCheck,
   IconCopyCheck,
-  IconListSearch,
 } from "@tabler/icons-react";
 import clsx from "clsx";
 
 import DeleteConfirmationModal from "../modals/delete-confirmation";
 
-import { ColorType } from "@/types";
 import { INotification } from "@/interfaces/notification";
 import { notificationsService } from "@/services/notificationsService";
 import { NotificationType } from "@/enums/notificationType";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { utcToLocal } from "@/helpers/dateFormatter";
+import showToast from "@/components/ui/toast";
 
 export default function NotificationsList() {
   const locale = useLocale();
@@ -100,6 +97,7 @@ export default function NotificationsList() {
 
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedFilter(filterValue), 400);
+
     return () => clearTimeout(handler);
   }, [filterValue]);
 
@@ -120,15 +118,17 @@ export default function NotificationsList() {
 
       if (response?.ok) {
         const { items, count } = await response.json();
+
         setNotifications(items);
         setTotalNotifications(count);
       } else {
         setNotifications([]);
         setTotalNotifications(0);
-        toast("danger", t("messages.fetchError"));
+        showToast("danger", t("messages.fetchError"));
       }
       setIsLoading(false);
     };
+
     void fetchData();
   }, [
     rowsPerPage,
@@ -143,24 +143,29 @@ export default function NotificationsList() {
 
   const notificationsSelected = useMemo(() => {
     if (selectedKeys === "all") return notifications.map((n) => n.id);
+
     return Array.from(selectedKeys) as string[];
   }, [selectedKeys, notifications]);
 
   const onMarkAsRead = async (id: string) => {
     const result = await notificationsService.markAsRead(id, locale);
-    if (result?.ok) toast("success", t("messages.markAsReadSuccess"));
+
+    if (result?.ok) showToast("success", t("messages.markAsReadSuccess"));
     else {
       const { detail } = await result?.json();
-      toast("danger", detail);
+
+      showToast("danger", detail);
     }
   };
 
   const onMarkAllAsRead = async () => {
     const result = await notificationsService.markAllAsRead(locale);
-    if (result?.ok) toast("success", t("messages.markAllAsReadSuccess"));
+
+    if (result?.ok) showToast("success", t("messages.markAllAsReadSuccess"));
     else {
       const { detail } = await result?.json();
-      toast("danger", detail);
+
+      showToast("danger", detail);
     }
   };
 
@@ -172,7 +177,7 @@ export default function NotificationsList() {
         : await notificationsService.deleteMany(notificationsSelected);
 
     if (response?.ok) {
-      toast(
+      showToast(
         "success",
         notificationsSelected.length === 1
           ? t("messages.deleteSuccess")
@@ -182,7 +187,7 @@ export default function NotificationsList() {
       setRefresh((prev) => !prev);
       onOpenChange();
     } else {
-      toast(
+      showToast(
         "danger",
         notificationsSelected.length === 1
           ? t("messages.deleteError")
@@ -192,16 +197,9 @@ export default function NotificationsList() {
     setIsDeleting(false);
   };
 
-  const toast = (color: ColorType, description: string) =>
-    addToast({
-      color,
-      description,
-      timeout: 3000,
-      shouldShowTimeoutProgress: true,
-    });
-
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
+
     return columns.filter((col) =>
       Array.from(visibleColumns).includes(col.uid),
     );
@@ -212,8 +210,10 @@ export default function NotificationsList() {
       const currentKeys = new Set(
         prev === "all" ? notifications.map((n) => n.id.toString()) : prev,
       );
+
       if (currentKeys.has(id)) currentKeys.delete(id);
       else currentKeys.add(id);
+
       return new Set(currentKeys);
     });
   };
@@ -314,28 +314,28 @@ export default function NotificationsList() {
       <div className="flex flex-col gap-4 mb-4">
         <div className="flex flex-col items-center gap-3 w-full sm:flex-row sm:items-center sm:justify-end">
           <Switch
+            className="w-full sm:w-auto"
             isSelected={includeRead}
             onChange={() => setIncludeRead(!includeRead)}
-            className="w-full sm:w-auto"
           >
             {t("includeRead")}
           </Switch>
           {notificationsSelected.length > 0 && (
             <Button
+              className="w-full sm:w-auto"
               color="danger"
               endContent={<IconTrash size="20" />}
               variant="flat"
               onPress={onOpen}
-              className="w-full sm:w-auto"
             >
               {tCommon("delete")} ({notificationsSelected.length})
             </Button>
           )}
           <Button
+            className="w-full sm:w-auto"
             color="primary"
             endContent={<IconCopyCheck size="20" />}
             onPress={onMarkAllAsRead}
-            className="w-full sm:w-auto"
           >
             {t("markAllAsRead")}
           </Button>
@@ -348,6 +348,7 @@ export default function NotificationsList() {
             {tCommon("rowsPerPage")}:
             <select
               className="bg-transparent outline-none text-default-400 text-small"
+              id="rowsPerPage"
               value={rowsPerPage}
               onChange={onRowsPerPageChange}
             >
@@ -427,12 +428,12 @@ export default function NotificationsList() {
         <Table
           isHeaderSticky
           aria-label="Notifications Table"
+          classNames={{ wrapper: "max-h-[382px]" }}
           selectedKeys={selectedKeys}
           selectionMode="multiple"
           sortDescriptor={sortDescriptor}
           onSelectionChange={setSelectedKeys}
           onSortChange={setSortDescriptor}
-          classNames={{ wrapper: "max-h-[382px]" }}
         >
           <TableHeader columns={headerColumns}>
             {(column) => (
@@ -495,6 +496,7 @@ export default function NotificationsList() {
               const isSelected =
                 selectedKeys === "all" ||
                 selectedKeys.has(notification.id.toString());
+
               return (
                 <Card
                   key={notification.id}

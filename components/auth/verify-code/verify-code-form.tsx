@@ -9,7 +9,6 @@ import {
   CardFooter,
   Button,
   Divider,
-  addToast,
   InputOtp,
   Avatar,
 } from "@heroui/react";
@@ -24,6 +23,7 @@ import { Link } from "@/i18n/navigation";
 import { useVerificationStorage } from "@/stores/verificationStore";
 import { VerificationCodeType } from "@/enums/verificationCodeType";
 import { useResendCountdownWithStore } from "@/hooks/useResendCountdown";
+import showToast from "@/components/ui/toast";
 
 export default function VerifyCodeForm() {
   const locale = useLocale();
@@ -58,13 +58,9 @@ export default function VerifyCodeForm() {
     onSubmit: async (data: IVerifyCodeFormData) => {
       const response = await authService.verifyCode(data, locale);
 
-      if (response?.status === 200) {
-        addToast({
-          color: "success",
-          title: t("messages.verificationSuccess"),
-          timeout: 3000,
-          shouldShowTimeoutProgress: true,
-        });
+      if (response?.ok) {
+        showToast("success", t("messages.verificationSuccess"));
+
         if (data.codeType === VerificationCodeType.EmailVerification) {
           clearData();
           router.push("/sign-in");
@@ -78,12 +74,7 @@ export default function VerifyCodeForm() {
       } else {
         const { detail } = await response?.json();
 
-        addToast({
-          color: "danger",
-          title: detail,
-          timeout: 3000,
-          shouldShowTimeoutProgress: true,
-        });
+        showToast("danger", detail);
       }
     },
   });
@@ -113,23 +104,13 @@ export default function VerifyCodeForm() {
     if (response?.ok) {
       setIsResending(false);
       start();
-      addToast({
-        color: "success",
-        title: t("messages.codeResent"),
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-      });
+      showToast("success", t("messages.codeResent"));
       await setFieldValue("code", "");
     } else {
       setIsResending(false);
       const { detail } = await response?.json();
 
-      addToast({
-        color: "danger",
-        title: detail,
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-      });
+      showToast("danger", detail);
     }
   };
 
@@ -165,6 +146,7 @@ export default function VerifyCodeForm() {
               <div className="flex justify-center items-center w-full">
                 <InputOtp
                   isRequired
+                  autoComplete="on"
                   errorMessage={errors.code}
                   id="code"
                   isInvalid={!!errors.code && touched.code}
