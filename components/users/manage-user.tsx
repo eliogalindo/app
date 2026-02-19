@@ -4,7 +4,7 @@ import type { Selection, SortDescriptor } from "@heroui/react";
 
 import { useTranslations, useLocale } from "next-intl";
 import { useParams } from "next/navigation";
-import React, {
+import {
   ChangeEvent,
   Key,
   useCallback,
@@ -23,10 +23,8 @@ import {
   Button,
   Pagination,
   Spinner,
-  addToast,
   Form,
   Divider,
-  Chip,
   Select,
   SelectItem,
   CardBody,
@@ -44,8 +42,7 @@ import {
   IconListSearch,
 } from "@tabler/icons-react";
 
-import UserImageInput from "../ui/user-image-input";
-
+import UserImageInput from "@/components/ui/user-image-input";
 import { useRouter } from "@/i18n/navigation";
 import { IRole } from "@/interfaces/role";
 import { rolesService } from "@/services/rolesService";
@@ -55,7 +52,7 @@ import { IUserFormData } from "@/interfaces/user";
 import { usersService } from "@/services/usersService";
 import { API_URL } from "@/constants";
 import { UserStatus } from "@/enums/userStatus";
-import { ColorType } from "@/types";
+import showToast from "@/components/ui/toast";
 
 export default function ManageUser() {
   const router = useRouter();
@@ -131,8 +128,7 @@ export default function ManageUser() {
       } else {
         setRoles([]);
         setTotalRoles(0);
-
-        toast("danger", t("messages.fetchError"));
+        showToast("danger", t("messages.fetchError"));
       }
       setIsLoading(false);
     };
@@ -201,7 +197,9 @@ export default function ManageUser() {
         <div className="flex justify-between gap-3 items-end">
           <Input
             isClearable
+            autoComplete="on"
             className="w-full sm:max-w-[44%]"
+            id="search"
             placeholder={tRoles("searchPlaceholder")}
             startContent={<IconListSearch stroke={1} />}
             value={filterValue}
@@ -216,6 +214,7 @@ export default function ManageUser() {
           <label className="flex items-center text-default-400 text-small">
             {tCommon("rowsPerPage")}:
             <select
+              id="rowsPerPage"
               className="bg-transparent outline-none text-default-400 text-small"
               value={rowsPerPage}
               onChange={onRowsPerPageChange}
@@ -328,12 +327,12 @@ export default function ManageUser() {
       );
 
       if (response?.ok) {
-        toast("success", t("messages.updateSuccess"));
+        showToast("success", t("messages.updateSuccess"));
         router.push("/admin/users");
       } else {
         const { detail } = await response?.json();
 
-        toast("danger", detail);
+        showToast("danger", detail);
       }
     } else {
       const response = await usersService.create(
@@ -346,12 +345,12 @@ export default function ManageUser() {
       );
 
       if (response?.ok) {
-        toast("success", t("messages.createSuccess"));
+        showToast("success", t("messages.createSuccess"));
         router.push("/admin/users");
       } else {
         const { detail } = await response?.json();
 
-        toast("danger", detail);
+        showToast("danger", detail);
       }
     }
   };
@@ -400,7 +399,7 @@ export default function ManageUser() {
           }
           void setValues({ ...user, status: user?.status.toString() });
         } else {
-          toast("danger", t("messages.fetchError"));
+          showToast("danger", t("messages.fetchError"));
         }
       }
     };
@@ -410,17 +409,9 @@ export default function ManageUser() {
 
   useEffect(() => {
     if (errors.roles && isSubmitting) {
-      toast("danger", t("messages.rolesRequired"));
+      showToast("danger", t("messages.rolesRequired"));
     }
   }, [errors.roles, isSubmitting]);
-
-  const toast = (color: ColorType, description: string) =>
-    addToast({
-      color: color,
-      description: description,
-      timeout: 3000,
-      shouldShowTimeoutProgress: true,
-    });
 
   // --- Helpers for Mobile/Card View ---
 
@@ -429,11 +420,13 @@ export default function ManageUser() {
       const currentKeys = new Set(
         prev === "all" ? roles.map((r) => r.id.toString()) : prev,
       );
+
       if (currentKeys.has(id)) {
         currentKeys.delete(id);
       } else {
         currentKeys.add(id);
       }
+
       return new Set(currentKeys);
     });
   };
@@ -459,6 +452,7 @@ export default function ManageUser() {
           <div className="flex flex-col w-full sm:flex-col gap-4">
             <Input
               isRequired
+              autoComplete="on"
               errorMessage={errors.fullName}
               id="fullName"
               isInvalid={!!errors.fullName && touched.fullName}
@@ -473,6 +467,7 @@ export default function ManageUser() {
             />
             <Input
               isRequired
+              autoComplete="on"
               errorMessage={errors.username}
               id="username"
               isInvalid={!!errors.username && touched.username}
@@ -489,6 +484,7 @@ export default function ManageUser() {
           <div className="flex flex-col w-full sm:flex-col gap-4">
             <Input
               isRequired
+              autoComplete="on"
               errorMessage={errors.email}
               id="email"
               isInvalid={!!errors.email && touched.email}
@@ -503,6 +499,7 @@ export default function ManageUser() {
             />
             <Input
               isRequired
+              autoComplete="on"
               errorMessage={errors.phone}
               id="phone"
               isInvalid={!!errors.phone && touched.phone}
@@ -519,6 +516,7 @@ export default function ManageUser() {
         </div>
         <div className="flex flex-col w-full sm:flex-col gap-4">
           <Input
+            autoComplete="on"
             endContent={
               <button
                 aria-label="toggle password visibility"
@@ -534,6 +532,7 @@ export default function ManageUser() {
               </button>
             }
             errorMessage={errors.password}
+            id="password"
             isInvalid={!!errors.password && touched.password}
             isRequired={!userId}
             label={t("password")}
@@ -546,6 +545,7 @@ export default function ManageUser() {
             onChange={handleChange}
           />
           <Input
+            autoComplete="on"
             endContent={
               <button
                 aria-label="toggle password confirmation visibility"
@@ -561,6 +561,7 @@ export default function ManageUser() {
               </button>
             }
             errorMessage={errors.passwordConfirmation}
+            id="passwordConfirmation"
             isInvalid={
               !!errors.passwordConfirmation && touched.passwordConfirmation
             }
@@ -581,6 +582,7 @@ export default function ManageUser() {
             description={t("statusPlaceholder")}
             endContent={statusIcons[values.status]}
             errorMessage={errors.status}
+            id="status"
             isInvalid={!!errors.status && touched.status}
             label={t("status")}
             labelPlacement="outside"

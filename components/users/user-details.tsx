@@ -5,7 +5,6 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Checkbox,
   Chip,
   ChipProps,
   Selection,
@@ -13,7 +12,7 @@ import {
 } from "@heroui/react";
 import { useTranslations, useLocale } from "next-intl";
 import { useParams } from "next/navigation";
-import React, { Key, useCallback, useEffect, useMemo, useState } from "react";
+import { Key, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -23,7 +22,6 @@ import {
   TableCell,
   Button,
   Spinner,
-  addToast,
   Divider,
 } from "@heroui/react";
 
@@ -34,7 +32,7 @@ import { IRole } from "@/interfaces/role";
 import { IUser } from "@/interfaces/user";
 import { usersService } from "@/services/usersService";
 import { API_URL } from "@/constants";
-import { ColorType } from "@/types";
+import showToast from "@/components/ui/toast";
 
 export default function UserDetails() {
   const router = useRouter();
@@ -111,7 +109,7 @@ export default function UserDetails() {
         } else {
           const { detail } = await response?.json();
 
-          toast("danger", detail);
+          showToast("danger", detail);
         }
         setIsLoading(false);
       }
@@ -119,14 +117,6 @@ export default function UserDetails() {
 
     void fetchRole();
   }, [userId]);
-
-  const toast = (color: ColorType, description: string) =>
-    addToast({
-      color: color,
-      description: description,
-      timeout: 3000,
-      shouldShowTimeoutProgress: true,
-    });
 
   const topContent = useMemo(() => {
     return (
