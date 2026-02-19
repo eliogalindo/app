@@ -17,10 +17,10 @@ import {
   IconZoomExclamation,
   IconDeviceDesktopCog,
 } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
 
 import { usePathname } from "@/i18n/navigation";
 import { useSidebarStore } from "@/stores/sidebarStore";
-import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/stores/authStore";
 
 type SubItem = {
@@ -149,6 +149,7 @@ const AppSidebar: React.FC = () => {
 
   useEffect(() => {
     let matchedIndex: number | null = null;
+
     //Uses the filtered list to calculate the active menu
     filteredNavItems.forEach((nav, index) => {
       nav.subItems?.forEach((subItem) => {
@@ -163,6 +164,7 @@ const AppSidebar: React.FC = () => {
   useEffect(() => {
     if (openSubmenu !== null) {
       const key = `submenu-${openSubmenu}`;
+
       if (subMenuRefs.current[key]) {
         setSubMenuHeight((prev) => ({
           ...prev,

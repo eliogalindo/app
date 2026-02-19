@@ -68,7 +68,7 @@ export default defineConfig([
       "prettier/prettier": "warn",
       "no-unused-vars": "warn",
       "unused-imports/no-unused-vars": "warn",
-      "unused-imports/no-unused-imports": "warn",
+      "unused-imports/no-unused-imports": "error",
 
       // TypeScript
       "@typescript-eslint/no-unused-vars": [
@@ -90,7 +90,7 @@ export default defineConfig([
       "react/prop-types": "off",
       "react/jsx-uses-react": "off",
       "react/react-in-jsx-scope": "off",
-      "react-hooks/exhaustive-deps": "false",
+      "react-hooks/exhaustive-deps": "off",
       "react/self-closing-comp": "warn",
       "react/jsx-sort-props": [
         "warn",

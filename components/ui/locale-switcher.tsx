@@ -3,10 +3,10 @@
 import { Select, SelectItem } from "@heroui/react";
 import { useLocale, Locale } from "next-intl";
 import React from "react";
-
-import { usePathname, useRouter } from "@/i18n/navigation";
 import { US } from "country-flag-icons/react/3x2";
 import { ES } from "country-flag-icons/react/3x2";
+
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 const LocaleSwitcher = () => {
   const locale = useLocale();
@@ -18,8 +18,8 @@ const LocaleSwitcher = () => {
   };
 
   const statusIcons: Record<string, React.ReactNode> = {
-    "es-ES": <ES title="Español" width={18} height={18} />,
-    "en-US": <US title="English" width={18} height={18} />,
+    "es-ES": <ES height={18} title="Español" width={18} />,
+    "en-US": <US height={18} title="English" width={18} />,
   };
 
   return (
@@ -27,8 +27,9 @@ const LocaleSwitcher = () => {
       <Select
         aria-label="Locale switcher"
         endContent={
-          statusIcons[locale] || <US title="English" width={18} height={18} />
+          statusIcons[locale] || <US height={18} title="English" width={18} />
         }
+        id="localeSwitcher"
         radius="full"
         selectedKeys={[locale]}
         size="sm"
@@ -36,13 +37,13 @@ const LocaleSwitcher = () => {
       >
         <SelectItem
           key={"en-US"}
-          endContent={<US title="English" width={18} height={18} />}
+          endContent={<US height={18} title="English" width={18} />}
         >
           EN
         </SelectItem>
         <SelectItem
           key={"es-ES"}
-          endContent={<ES title="Español" width={18} height={18} />}
+          endContent={<ES height={18} title="Español" width={18} />}
         >
           ES
         </SelectItem>

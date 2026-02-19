@@ -10,7 +10,6 @@ import {
   CardFooter,
   Button,
   Divider,
-  addToast,
   Avatar,
 } from "@heroui/react";
 import { useTranslations, useLocale } from "next-intl";
@@ -22,6 +21,7 @@ import { authService } from "@/services/authService";
 import { Link } from "@/i18n/navigation";
 import { useVerificationStorage } from "@/stores/verificationStore";
 import { VerificationCodeType } from "@/enums/verificationCodeType";
+import showToast from "@/components/ui/toast";
 
 export default function VerifyAccountForm() {
   const locale = useLocale();
@@ -33,12 +33,7 @@ export default function VerifyAccountForm() {
     const response = await authService.verifyAccount(data, locale);
 
     if (response?.ok) {
-      addToast({
-        color: "success",
-        title: t("messages.verificationSuccess"),
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-      });
+      showToast("success", t("messages.verificationSuccess"));
 
       setData({
         email: data.email,
@@ -49,12 +44,7 @@ export default function VerifyAccountForm() {
     } else {
       const { detail } = await response?.json();
 
-      addToast({
-        color: "danger",
-        title: detail,
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-      });
+      showToast("danger", detail);
     }
   };
 
@@ -89,6 +79,7 @@ export default function VerifyAccountForm() {
             <div className="flex flex-col gap-3 w-full">
               <Input
                 isRequired
+                autoComplete="on"
                 errorMessage={errors.email}
                 id="email"
                 isInvalid={!!errors.email && touched.email}

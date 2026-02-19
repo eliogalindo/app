@@ -4,7 +4,7 @@ import type { Selection, SortDescriptor } from "@heroui/react";
 
 import { useTranslations, useLocale } from "next-intl";
 import { useParams } from "next/navigation";
-import React, {
+import {
   ChangeEvent,
   Key,
   useCallback,
@@ -23,7 +23,6 @@ import {
   Button,
   Pagination,
   Spinner,
-  addToast,
   Form,
   Divider,
   Switch,
@@ -35,6 +34,8 @@ import {
 import { useFormik } from "formik";
 import { IconListSearch } from "@tabler/icons-react";
 
+import showToast from "@/components/ui/toast";
+
 import { useRouter } from "@/i18n/navigation";
 import { permissionsService } from "@/services/permissionsService";
 import { IPermission } from "@/interfaces/permission";
@@ -42,7 +43,6 @@ import { IRoleFormData } from "@/interfaces/role";
 import { rolesService } from "@/services/rolesService";
 import { RoleSchema } from "@/schemas/role";
 import { title } from "@/components/primitives";
-import { ColorType } from "@/types";
 
 export default function ManageRole() {
   const router = useRouter();
@@ -121,8 +121,7 @@ export default function ManageRole() {
       } else {
         setPermissions([]);
         setTotalPermissions(0);
-
-        toast("danger", t("messages.fetchError"));
+        showToast("danger", t("messages.fetchError"));
       }
       setIsLoading(false);
     };
@@ -153,11 +152,13 @@ export default function ManageRole() {
       const currentKeys = new Set(
         prev === "all" ? permissions.map((r) => r.id.toString()) : prev,
       );
+
       if (currentKeys.has(id)) {
         currentKeys.delete(id);
       } else {
         currentKeys.add(id);
       }
+
       return new Set(currentKeys);
     });
   };
@@ -230,7 +231,9 @@ export default function ManageRole() {
         <div className="flex justify-between gap-3 items-end">
           <Input
             isClearable
+            autoComplete="on"
             className="w-full sm:max-w-[44%]"
+            id="search"
             placeholder={tPermissions("searchPlaceholder")}
             startContent={<IconListSearch stroke={1} />}
             value={filterValue}
@@ -337,12 +340,12 @@ export default function ManageRole() {
       );
 
       if (response?.status === 200) {
-        toast("success", t("messages.updateSuccess"));
+        showToast("success", t("messages.updateSuccess"));
         router.push("/admin/roles");
       } else {
         const { detail } = await response?.json();
 
-        toast("danger", detail);
+        showToast("danger", detail);
       }
     } else {
       const response = await rolesService.create(
@@ -355,12 +358,12 @@ export default function ManageRole() {
       );
 
       if (response?.status === 200) {
-        toast("success", t("messages.createSuccess"));
+        showToast("success", t("messages.createSuccess"));
         router.push("/admin/roles");
       } else {
         const { detail } = await response?.json();
 
-        toast("danger", detail);
+        showToast("danger", detail);
       }
     }
   };
@@ -398,7 +401,7 @@ export default function ManageRole() {
             setSelectedKeys(
               new Set(
                 role?.permissions.map(
-                  (e: IPermission) => e.id.toString(),
+                  (permission: IPermission) => permission.id.toString(),
                   locale,
                 ),
               ),
@@ -408,7 +411,7 @@ export default function ManageRole() {
         } else {
           const { detail } = await response?.json();
 
-          toast("danger", detail);
+          showToast("danger", detail);
         }
       }
     };
@@ -418,17 +421,9 @@ export default function ManageRole() {
 
   useEffect(() => {
     if (errors.permissions && isSubmitting) {
-      toast("danger", t("messages.permissionsRequired"));
+      showToast("danger", t("messages.permissionsRequired"));
     }
   }, [errors.permissions, isSubmitting]);
-
-  const toast = (color: ColorType, description: string) =>
-    addToast({
-      color: color,
-      description: description,
-      timeout: 3000,
-      shouldShowTimeoutProgress: true,
-    });
 
   return (
     <div className="w-full py-8 md:py-10">
@@ -440,6 +435,7 @@ export default function ManageRole() {
       <Form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
         <Input
           isRequired
+          autoComplete="on"
           errorMessage={errors.denomination}
           id="denomination"
           isInvalid={!!errors.denomination && touched.denomination}
@@ -454,8 +450,9 @@ export default function ManageRole() {
         />
         <Input
           isRequired
+          autoComplete="on"
           errorMessage={errors.description}
-          id="denomination"
+          id="description"
           isInvalid={!!errors.description && touched.description}
           label={t("description")}
           labelPlacement="outside"

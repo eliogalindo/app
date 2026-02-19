@@ -10,7 +10,7 @@ import {
 } from "@heroui/react";
 import { useTranslations, useLocale } from "next-intl";
 import { useParams } from "next/navigation";
-import React, { Key, useCallback, useEffect, useMemo, useState } from "react";
+import { Key, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -20,7 +20,6 @@ import {
   TableCell,
   Button,
   Spinner,
-  addToast,
   Divider,
 } from "@heroui/react";
 
@@ -29,7 +28,7 @@ import { IPermission } from "@/interfaces/permission";
 import { rolesService } from "@/services/rolesService";
 import { title } from "@/components/primitives";
 import { IRole } from "@/interfaces/role";
-import { ColorType } from "@/types";
+import showToast from "@/components/ui/toast";
 
 export default function RoleDetails() {
   const router = useRouter();
@@ -125,7 +124,7 @@ export default function RoleDetails() {
           }
           setPermissions(role?.permissions);
         } else {
-          toast("danger", t("messages.fetchError"));
+          showToast("danger", t("messages.fetchError"));
         }
         setIsLoading(false);
       }
@@ -134,13 +133,6 @@ export default function RoleDetails() {
     void fetchRole();
   }, [roleId]);
 
-  const toast = (color: ColorType, description: string) =>
-    addToast({
-      color: color,
-      description: description,
-      timeout: 3000,
-      shouldShowTimeoutProgress: true,
-    });
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col mt-2 gap-4 mb-4">

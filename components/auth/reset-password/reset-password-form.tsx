@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import {
-  addToast,
   Avatar,
   Button,
   Card,
@@ -23,6 +22,7 @@ import { IResetPasswordFormData, IVerificationData } from "@/interfaces/auth";
 import { authService } from "@/services/authService";
 import { useVerificationStorage } from "@/stores/verificationStore";
 import { VerificationCodeType } from "@/enums/verificationCodeType";
+import showToast from "@/components/ui/toast";
 
 export default function ResetPasswordForm() {
   const locale = useLocale();
@@ -39,24 +39,14 @@ export default function ResetPasswordForm() {
   const onSubmit = async (data: IResetPasswordFormData) => {
     const response = await authService.resetPassword(data, locale);
 
-    if (response?.status === 200) {
-      addToast({
-        color: "success",
-        title: t("messages.passwordResetSuccess"),
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-      });
+    if (response?.ok) {
+      showToast("success", t("messages.passwordResetSuccess"));
       clearData();
       router.push("/sign-in");
     } else {
       const { detail } = await response?.json();
 
-      addToast({
-        color: "danger",
-        title: detail,
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-      });
+      showToast("danger", detail);
     }
   };
 
@@ -106,6 +96,7 @@ export default function ResetPasswordForm() {
             <div className="flex flex-col w-full sm:flex-col gap-3">
               <Input
                 isRequired
+                autoComplete="on"
                 endContent={
                   <button
                     aria-label="toggle password visibility"
@@ -121,6 +112,7 @@ export default function ResetPasswordForm() {
                   </button>
                 }
                 errorMessage={errors.password}
+                id="password"
                 isInvalid={!!errors.password && touched.password}
                 label={t("password")}
                 labelPlacement="outside"
@@ -133,6 +125,7 @@ export default function ResetPasswordForm() {
               />
               <Input
                 isRequired
+                autoComplete="on"
                 endContent={
                   <button
                     aria-label="toggle password confirmation visibility"
@@ -148,6 +141,7 @@ export default function ResetPasswordForm() {
                   </button>
                 }
                 errorMessage={errors.passwordConfirmation}
+                id="passwordConfirmation"
                 isInvalid={
                   !!errors.passwordConfirmation && touched.passwordConfirmation
                 }

@@ -12,7 +12,6 @@ import {
   CardFooter,
   Button,
   Divider,
-  addToast,
   Avatar,
 } from "@heroui/react";
 import { useTranslations, useLocale } from "next-intl";
@@ -26,6 +25,7 @@ import { authService } from "@/services/authService";
 import { Link } from "@/i18n/navigation";
 import { useVerificationStorage } from "@/stores/verificationStore";
 import { VerificationCodeType } from "@/enums/verificationCodeType";
+import showToast from "@/components/ui/toast";
 
 export default function SignInForm() {
   const locale = useLocale();
@@ -42,28 +42,15 @@ export default function SignInForm() {
     const response = await authService.signIn(data, locale);
 
     if (response?.ok) {
-      addToast({
-        color: "success",
-        title: t("messages.signInSuccess"),
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-      });
-
+      showToast("success", t("messages.signInSuccess"));
       const user: IAuthData = await response.json();
 
       setAuthData(user); // Store the auth user data
-
       router.push("/admin");
     } else if (response?.status === 403) {
       const { detail } = await response?.json();
 
-      addToast({
-        color: "warning",
-        title: detail,
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-      });
-
+      showToast("warning", detail);
       setData({
         email: data.email,
         codeType: VerificationCodeType.EmailVerification,
@@ -73,12 +60,7 @@ export default function SignInForm() {
     } else {
       const { detail } = await response?.json();
 
-      addToast({
-        color: "danger",
-        title: detail,
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-      });
+      showToast("danger", detail);
     }
   };
 
@@ -115,6 +97,7 @@ export default function SignInForm() {
             <div className="flex flex-col gap-3 w-full">
               <Input
                 isRequired
+                autoComplete="on"
                 errorMessage={errors.email}
                 id="email"
                 isInvalid={!!errors.email && touched.email}
@@ -130,6 +113,7 @@ export default function SignInForm() {
 
               <Input
                 isRequired
+                autoComplete="on"
                 endContent={
                   <button
                     aria-label="toggle password visibility"
@@ -141,6 +125,7 @@ export default function SignInForm() {
                   </button>
                 }
                 errorMessage={errors.password}
+                id="password"
                 isInvalid={!!errors.password && touched.password}
                 label={t("password")}
                 labelPlacement="outside"
