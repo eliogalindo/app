@@ -147,7 +147,7 @@ export default function RoleDetails() {
 
   const LoadingSkeleton = () => {
     return (
-      <div className="w-full flex flex-row items-start gap-4">
+      <div className="w-full flex flex-col sm:flex-row items-start gap-4">
         <div className="w-full max-w-100 flex flex-col items-start gap-6">
           <div className="w-full flex flex-col gap-2">
             <Skeleton className="h-4 w-2/5 rounded-lg" />
